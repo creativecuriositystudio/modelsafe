@@ -1,0 +1,38 @@
+{
+  "name": "modelsafe",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "bugs": "https://github.com/creativecuriositystudio/modelsafe/issues",
+  "keywords": ["orm", "model", "data", "typescript"],
+  "homepage": "https://github.com/creativecuriositystudio/modelsafe",
+  "license": "MIT",
+  "description": "A type-safe data modelling library",
+  "contributors": [
+    "Zack Corr <zack@z0w0.me> (http://z0w0.me)"
+  ],
+  "scripts": {
+    "prepublish": "tsc",
+    "docs": "typedoc --out docs src/index.ts",
+    "test": "mocha --opts mocha.opts",
+    "test:auto": "mocha --opts mocha.opts --watch",
+    "lint": "tslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "types": "./dist/index.d.ts",
+  "devDependencies": {
+    "@types/mocha": "^2.2.33",
+    "@types/should": "^8.1.30",
+    "mocha": "^3.2.0",
+    "should": "^11.1.2",
+    "ts-node": "^1.7.2",
+    "tslint": "^4.0.2",
+    "typedoc": "^0.5.1"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.41",
+    "@types/reflect-metadata": "0.0.5",
+    "lodash": "^4.17.2",
+    "reflect-metadata": "^0.1.8",
+    "typescript": "^2.1.4"
+  }
+}
