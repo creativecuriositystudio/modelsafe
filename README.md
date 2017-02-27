@@ -11,6 +11,15 @@ Attributes and associations are defined on model classes using decorators.
 On top of this, ModelSafe also provides support for defining the validation rules on
 model attributes using decorators and model data with these rules.
 
+On its own, ModelSafe is not necessarily useful. Itwas written with the aim
+of having a frontend/backend agnostic data modelling library that can be used
+by other libraries. At the moment, ModelSafe has three highly-recommended companion pieces for
+web application development:
+
+* Squell: a database library that integrates ModelSafe models with the Sequelize ORM library
+* Crea: a web framework for writing REST APIs, that uses Squell and hence ModelSafe for REST resource queries
+* ng2-crudsafe: An Angular 2 library that generates CRUD-like screens from ModelSafe models
+
 ## Installation
 
 ```sh
@@ -33,7 +42,24 @@ A model attribute is a piece information on the model. This might be a person's 
 date of birth and so on. Properties on model classes that are attributes are
 decorated with the `attr` decorator. Attributes can be of the following types:
 
-*
+* STRING
+* CHAR
+* TEXT
+* INTEGER
+* BIGINT
+* FLOAT
+* REAL
+* DOUBLE
+* DECIMAL
+* BOOLEAN
+* TIME
+* DATE
+* DATEONLY
+* JSON
+* JSONB
+* BLOB
+* ENUM
+* ARRAY
 
 Note that an important distinction must be made. An attribute type is separate
 from how its property's type is declared in the TypeScript code. This is because
@@ -113,8 +139,6 @@ class User extends modelsafe.Model {
 
 There are a number of additional options that can be provided to the `assoc`
 directive. Check out the API documentation for more information.
-
-#### Validations
 
 ### Safe
 

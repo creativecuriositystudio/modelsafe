@@ -1,6 +1,9 @@
 /** Contains the model classes and decorators. */
+import { AssociationType } from './association';
 import { Attribute } from './attribute';
-import { defineModelOptions, guessModelName } from './metadata';
+import { defineModelOptions, defineAssociation, guessModelName,
+         getProperties, getAssociations } from './metadata';
+
 import { Property } from './property';
 
 /**
@@ -10,7 +13,44 @@ import { Property } from './property';
  * which means you could have multiple database connections
  * and the model could be defined and queried on them separately.
  */
-export abstract class Model {}
+export abstract class Model {
+  /**
+   * Associate a model with a target model under a specific property on the
+   * source model. This is ideally used to solve circular dependencies
+   * and situations where you need to associate to a model that is not yet
+   * defined.
+   *
+   * Ideally the association should still be defined using the `@assoc` decorator,
+   * but the target constructor shouldn't be provided and this function called
+   * later instead. However, that is not necessarily required as you
+   * can use this function to associate a model that to another without
+   * first decorating the model property that the association lives under.
+   *
+   * @param ctor The source model constructor.
+   * @param map A function that takes the source model's property and returns
+   *            the model property the association is under and the target
+   *            model for the association.
+   * @param type An optional association type if you would like to manually
+   *             define the type. Defining the type is recommended
+   *             through `@assoc` instead of using this.
+   */
+  static associate<T extends Model, U extends Model>(
+    ctor: ModelConstructor<T>,
+    map: (props: ModelProperties<T>) => [Property<T>, ModelConstructor<U>],
+    type?: AssociationType
+  ) {
+    let [prop, target] = map(getProperties<T>(ctor));
+    let assocs = getAssociations(ctor);
+    let key = prop.compile();
+    let options = assocs[key];
+
+    if (!type) {
+      type = options.type;
+    }
+
+    defineAssociation(ctor, key, { ... options, type });
+  }
+}
 
 /** A value that is both a model class value and something that can construct a model. */
 export type ModelConstructor<T extends Model> = typeof Model & { new(): T };
@@ -38,6 +78,8 @@ export interface ModelOptions {
  *
  * @param option Any extra model options required.
  */
-export function model(options?: any) {
-  return (ctor: Function) => defineModelOptions(ctor, { name: guessModelName(ctor), ... options });
+export function model(options?: ModelOptions) {
+  return (ctor: Function): void => {
+    defineModelOptions(ctor, { name: guessModelName(ctor), ... options });
+  };
 }

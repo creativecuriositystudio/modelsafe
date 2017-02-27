@@ -73,10 +73,15 @@ export interface ModelAssociations {
  * All association properties must be defined using this decorator in order
  * to be recognised by ModelSafe.
  *
+ * Here the target is optional incase it is yet to be defined.
+ * Once it has been defined, it can be correctly reassociated with
+ * a target model using `Model.assocate`.
+ *
+ * @see `Model.associate`
  * @param type    The type of association.
  * @param target  The target model to associate to.
  * @param options Any extra Sequelize attribute options required.
  */
-export function assoc<T extends Model>(type: AssociationType, target: ModelConstructor<T>, options?: any) {
+export function assoc<T extends Model>(type: AssociationType, target?: ModelConstructor<T>, options?: any) {
   return (ctor: Object, key: string | symbol) => defineAssociation(ctor, key, { ... options, type, target });
 }

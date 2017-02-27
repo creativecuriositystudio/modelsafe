@@ -21,12 +21,11 @@ export enum InternalAttributeType {
   BOOLEAN,
   TIME,
   DATE,
-  DATEONLY,
   JSON,
   JSONB,
   BLOB,
   ENUM,
-  ARRAY,
+  ARRAY
 }
 
 /** The type of an attribute, with any options required. */
@@ -63,7 +62,13 @@ export type AttributeTypeOptions = EnumAttributeTypeOptions | ArrayAttributeType
  * @param options Optional attribute options.
  */
 function buildAttributeType(type: InternalAttributeType, options?: AttributeTypeOptions): AttributeType {
-  return { type, options };
+  let attrType: AttributeType = { type };
+
+  if (options) {
+    attrType.options = options;
+  }
+
+  return attrType;
 }
 
 /** A string attribute type. */
@@ -147,7 +152,7 @@ export function ENUM(values: string[]): AttributeType {
  * @returns The ARRAY attribute type.
  */
 export function ARRAY(contained: AttributeType): AttributeType {
-  return buildAttributeType(InternalAttributeType.ENUM, { contained });
+  return buildAttributeType(InternalAttributeType.ARRAY, { contained });
 }
 
 /**
@@ -208,4 +213,3 @@ export interface ModelAttributes {
 export function attr(type: AttributeType, options?: any) {
   return (target: Object, key: string | symbol) => defineAttribute(target, key, { ... options, type });
 }
-
