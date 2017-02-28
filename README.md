@@ -62,6 +62,22 @@ decorated with the `attr` decorator. Attributes can be of the following types:
 * ENUM
 * ARRAY
 
+Definition of attributes looks like the following:
+
+```typescript
+@model()
+class User extends modelsafe.Model {
+  @attr(modelsafe.STRING)
+  email: string;
+
+  @attr(modelsafe.TEXT)
+  bio: string;
+
+  @attr(modelsafe.INTEGER)
+  numLogins: number;
+}
+```
+
 Note that an important distinction must be made. An attribute type is separate
 from how its property's type is declared in the TypeScript code. This is because
 TypeScript is based off of JavaScript and is hence quite lax on what types exist
@@ -103,6 +119,7 @@ ModelSafe supports the following associations (which are generally the standard)
 Definition of the four different associations looks like the following:
 
 ```typescript
+@model()
 class ChatRoom extends modelsafe.Model {
   // Other properties first..
 
@@ -110,6 +127,7 @@ class ChatRoom extends modelsafe.Model {
   user: User;
 }
 
+@model()
 class AvailabilityStatus extneds modelsafe.Model {
   // Other properties first..
   
@@ -117,6 +135,7 @@ class AvailabilityStatus extneds modelsafe.Model {
   user: User;
 }
 
+@model()
 class ChatMessage extneds modelsafe.Model {
   // Other properties first..
   
@@ -124,6 +143,7 @@ class ChatMessage extneds modelsafe.Model {
   users: User[];
 }
 
+@model()
 class User extends modelsafe.Model {
   // Other properties first..
 
