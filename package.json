@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "prepublish": "tsc",
+    "build": "tsc",
     "docs": "typedoc --out docs src/index.ts",
     "test": "mocha --opts mocha.opts",
     "test:auto": "mocha --opts mocha.opts --watch",
