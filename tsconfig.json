@@ -5,11 +5,9 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "allowSyntheticDefaultImports": true,
     "declaration": true
   },
   "exclude": [

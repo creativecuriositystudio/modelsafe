@@ -1,4 +1,4 @@
-import 'should';
+import * as chai from 'chai';
 
 import { attr, STRING } from './attribute';
 import { assoc, BELONGS_TO, HAS_MANY } from './association';
@@ -16,11 +16,8 @@ class Comment extends Model {
   @attr(STRING)
   message: string;
 
-  // FIXME: Doesn't work yet due to `User` not being defined.
-  /*
   @assoc(BELONGS_TO)
   user: User;
-   */
 }
 
 @model()
@@ -32,14 +29,14 @@ class User extends Model {
   comments: Comment[];
 }
 
-// FIXME: See above.
-// Model.associate(Comment, m => [m.user, User]);
+// Add the associaiton target we avoided adding for dependency reasons
+Model.associate(Comment, m => [m.user, User]);
 
 describe('guessModelName', () => {
   it('should guess names correctly', () => {
-    guessModelName(ANiceModelName).should.equal('aNiceModelName');
-    guessModelName(thisISA_WEIRD_ModelName).should.equal('thisIsaWeirdModelName');
-    guessModelName(This_Is_Even_Weirder123).should.equal('thisIsEvenWeirder123');
+    chai.should().equal(guessModelName(ANiceModelName), 'aNiceModelName');
+    chai.should().equal(guessModelName(thisISA_WEIRD_ModelName), 'thisIsaWeirdModelName');
+    chai.should().equal(guessModelName(This_Is_Even_Weirder123), 'thisIsEvenWeirder123');
   });
 });
 
@@ -47,7 +44,7 @@ describe('getProperties', () => {
   it('should map properties correctly', () => {
     let props: ModelProperties<User> = getProperties(User);
 
-    props.name.compile().should.equal('name');
-    props.comments.compile().should.equal('comments');
+    chai.should().equal(props.name.compile(), 'name');
+    chai.should().equal(props.comments.compile(), 'comments');
   });
 });

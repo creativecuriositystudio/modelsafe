@@ -105,7 +105,7 @@ export function getModelOptions(ctor: Function): ModelOptions {
  * @returns The model associations.
  */
 export function getAssociations(ctor: Function): ModelAssociations {
-  return { ... Reflect.getMetadata(MODEL_ASSOCS_META_KEY, ctor) };
+  return { ... Reflect.getMetadata(MODEL_ASSOCS_META_KEY, ctor.prototype) };
 }
 
 /**
@@ -115,7 +115,7 @@ export function getAssociations(ctor: Function): ModelAssociations {
  * @returns The model attributes.
  */
 export function getAttributes(ctor: Function): ModelAttributes {
-  return { ... Reflect.getMetadata(MODEL_ATTRS_META_KEY, ctor) };
+  return { ... Reflect.getMetadata(MODEL_ATTRS_META_KEY, ctor.prototype) };
 }
 
 export function getProperties<T extends Model>(ctor: Function): ModelProperties<T> {
@@ -137,4 +137,3 @@ export function getProperties<T extends Model>(ctor: Function): ModelProperties<
 
   return props as ModelProperties<T>;
 }
-

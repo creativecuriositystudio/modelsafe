@@ -1,10 +1,27 @@
-import 'should';
+import * as chai from 'chai';
 
-import { InternalAttributeType, STRING, CHAR, TEXT,
+import { attr, InternalAttributeType, STRING, CHAR, TEXT,
          INTEGER, BIGINT, FLOAT, REAL,
          DOUBLE, DECIMAL, BOOLEAN, TIME,
          DATE, JSON, JSONB, BLOB,
          ENUM, ARRAY } from './attribute';
+
+import { getAttributes } from './metadata';
+import { model, Model } from './model';
+
+@model()
+export class Entity extends Model {
+  @attr(STRING)
+  name: string;
+}
+
+describe('@attr', () => {
+  it('should define correctly', () => {
+    let attrs = getAttributes(Entity);
+
+    chai.assert.deepEqual(attrs['name'], { type: STRING });
+  });
+});
 
 describe('AttributeType', () => {
   const genericTests = {
@@ -30,7 +47,7 @@ describe('AttributeType', () => {
 
     describe(`#${key}`, () => {
       it('should instantiate correctly', () => {
-        externalType.should.deepEqual({
+        chai.assert.deepEqual(externalType, {
           type: internalType
         });
       });
@@ -39,7 +56,7 @@ describe('AttributeType', () => {
 
   describe('#ENUM', () => {
     it('should instantiate correctly', () => {
-      ENUM(['a', 'b', 'c']).should.deepEqual({
+      chai.assert.deepEqual(ENUM(['a', 'b', 'c']), {
         type: InternalAttributeType.ENUM,
         options: { values: ['a', 'b', 'c'] }
       });
@@ -48,14 +65,14 @@ describe('AttributeType', () => {
 
   describe('#ARRAY', () => {
     it('should instantiate correctly', () => {
-      ARRAY(STRING).should.deepEqual({
+      chai.assert.deepEqual(ARRAY(STRING), {
         type: InternalAttributeType.ARRAY,
         options: { contained: STRING }
       });
     });
 
     it('should instantiate recursive correctly', () => {
-      ARRAY(ARRAY(STRING)).should.deepEqual({
+      chai.assert.deepEqual(ARRAY(ARRAY(STRING)), {
         type: InternalAttributeType.ARRAY,
         options: {
           contained: {

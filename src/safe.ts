@@ -28,7 +28,7 @@ export class Safe {
   isDefined<T extends Model>(model: ModelConstructor<T>): boolean {
     let options = getModelOptions(model);
 
-    return options.name && !!this.models[options.name];
+    return !!this.models[options.name];
   }
 
   /**
@@ -65,7 +65,7 @@ export class Safe {
    * @param map A function that maps over a model's properties to some arbitrary value.
    * @returns Returns whatever value is returned from `map`.
    */
-  interact<T extends Model>(model: ModelConstructor<T>, map: (props: ModelProperties<T>) => any): any {
+  interact<T extends Model, U>(model: ModelConstructor<T>, map: (props: ModelProperties<T>) => U): U {
     if (!this.isDefined(model)) {
       throw new Error('Models must be defined on the safe before interacting with them');
     }

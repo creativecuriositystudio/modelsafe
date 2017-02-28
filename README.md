@@ -2,16 +2,17 @@
 
 ## Introduction
 
-ModelSafe is a type-safe data modelling library that is used to describe model schemas
-using TypeScript classes and decorators. These models are independent of any library
+ModelSafe is a type-safe data modelling library for TypeScript 2.1+ that is used to describe model schemas
+using classes and decorators. These models are independent of any library
 that actually queries them (whether from a REST API or a database), allowing
 you to define the models in your application agnostically of the backend/frontend.
 
-Attributes and associations are defined on model classes using decorators.
-On top of this, ModelSafe also provides support for defining the validation rules on
-model attributes using decorators and model data with these rules.
+Attributes and associations are defined on model classes using decorators to
+describe the schema of a model. On top of this, ModelSafe also provides support
+for defining the validation rules on model attributes using decorators and then
+validating the model data with these rules.
 
-On its own, ModelSafe is not necessarily useful. Itwas written with the aim
+On its own, ModelSafe is not necessarily useful. It was written with the aim
 of having a frontend/backend agnostic data modelling library that can be used
 by other libraries. At the moment, ModelSafe has three highly-recommended companion pieces for
 web application development:
@@ -84,8 +85,8 @@ By default attributes defined on models are required. To make them optional, set
 username?: string;
 ```
 
-There are a number of additional options that can be provided to the `attr`
-directive. Check out the API documentation for more information.
+There are a number of additional options that can be provided to the `@attr`
+decorator. Check out the API documentation for more information.
 
 #### Associations
 
@@ -137,8 +138,12 @@ class User extends modelsafe.Model {
 }
 ```
 
-There are a number of additional options that can be provided to the `assoc`
-directive. Check out the API documentation for more information.
+There are a number of additional options that can be provided to the `@assoc`
+decorator. Check out the API documentation for more information.
+
+#### Validations
+
+TODO
 
 ### Safe
 
@@ -158,6 +163,8 @@ should extend the `Safe` class and use the models defined on the safe in whateve
 by the integration the library is trying to support.
 
 ### Validating
+
+TODO
 
 ## Documentatation
 
