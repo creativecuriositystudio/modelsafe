@@ -8,16 +8,16 @@ import { Model, ModelOptions, ModelProperties } from './model';
 import { Validation, ValidationFunction, ValidationOptions } from './validation';
 
 /** The meta key for a model's options on a model class. */
-export const MODEL_OPTIONS_META_KEY = 'modelOptions';
+export const MODEL_OPTIONS_META_KEY = 'modelsafe:options';
 
 /** The meta key for a model attribute key list on a model class. */
-export const MODEL_ATTRS_META_KEY = 'modelAttrs';
+export const MODEL_ATTRS_META_KEY = 'modelsafe:attrs';
 
 /** The meta key for a model association key list on a model class. */
-export const MODEL_ASSOCS_META_KEY = 'modelAssocs';
+export const MODEL_ASSOCS_META_KEY = 'modelsafe:assocs';
 
 /** The meta key for an attribute's validations, on a specific property. */
-export const ATTR_VALIDATIONS_META_KEY = 'attrValidations';
+export const ATTR_VALIDATIONS_META_KEY = 'modelsafe:attr:validations';
 
 /**
  * Guess the name of a model. The name will be generated
@@ -55,12 +55,12 @@ export function guessModelName(ctor: Function): string {
 export function defineModelOptions(ctor: Function, options: ModelOptions) {
   // We extend the existing options so that other options defined on the prototype get inherited.
   options = {
-    ... Reflect.getMetadata(MODEL_OPTIONS_META_KEY, ctor),
+    ... Reflect.getMetadata(MODEL_OPTIONS_META_KEY, ctor.prototype),
 
     ... options
   };
 
-  Reflect.defineMetadata(MODEL_OPTIONS_META_KEY, options, ctor);
+  Reflect.defineMetadata(MODEL_OPTIONS_META_KEY, options, ctor.prototype);
 }
 
 /**
