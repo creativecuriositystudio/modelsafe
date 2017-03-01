@@ -27,7 +27,23 @@ export const ATTR_VALIDATIONS_META_KEY = 'attrValidations';
  * @returns A possible name for the model.
  */
 export function guessModelName(ctor: Function): string {
-  return _.camelCase(ctor.name);
+  // We cast to any as we're compiling in es5 mode,
+  // but we want to use the es6 Function.name feature if it's
+  // there. If it's not there.
+  let name = (ctor as any).name;
+
+  if (!name) {
+    // Polyfill this by stringifyng the function.
+    // Ugly but it works
+    let str = ctor.toString();
+
+    str = str.substr('function '.length);
+    str = str.substr(0, str.indexOf('('));
+
+    name = str;
+  }
+
+  return _.camelCase(name);
 }
 
 /**
@@ -96,7 +112,7 @@ export function defineAttributeValidation(ctor: Object, key: string | symbol, op
  * @returns The model options.
  */
 export function getModelOptions(ctor: Function): ModelOptions {
-  return { ... Reflect.getMetadata(MODEL_OPTIONS_META_KEY, ctor) };
+  return { ... Reflect.getMetadata(MODEL_OPTIONS_META_KEY, ctor.prototype) };
 }
 
 /**
@@ -105,7 +121,7 @@ export function getModelOptions(ctor: Function): ModelOptions {
  * @returns The model associations.
  */
 export function getAssociations(ctor: Function): ModelAssociations {
-  return { ... Reflect.getMetadata(MODEL_ASSOCS_META_KEY, ctor) };
+  return { ... Reflect.getMetadata(MODEL_ASSOCS_META_KEY, ctor.prototype) };
 }
 
 /**
@@ -115,7 +131,7 @@ export function getAssociations(ctor: Function): ModelAssociations {
  * @returns The model attributes.
  */
 export function getAttributes(ctor: Function): ModelAttributes {
-  return { ... Reflect.getMetadata(MODEL_ATTRS_META_KEY, ctor) };
+  return { ... Reflect.getMetadata(MODEL_ATTRS_META_KEY, ctor.prototype) };
 }
 
 export function getProperties<T extends Model>(ctor: Function): ModelProperties<T> {
@@ -137,4 +153,3 @@ export function getProperties<T extends Model>(ctor: Function): ModelProperties<
 
   return props as ModelProperties<T>;
 }
-
