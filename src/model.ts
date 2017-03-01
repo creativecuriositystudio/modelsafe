@@ -48,7 +48,7 @@ export abstract class Model {
       type = options.type;
     }
 
-    defineAssociation(ctor, key, { ... options, type });
+    defineAssociation(ctor.prototype, key, { ... options, type });
   }
 }
 
