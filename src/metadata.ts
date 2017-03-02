@@ -134,6 +134,12 @@ export function getAttributes(ctor: Function): ModelAttributes {
   return { ... Reflect.getMetadata(MODEL_ATTRS_META_KEY, ctor.prototype) };
 }
 
+/**
+ * Get the model properties for a model constructor.
+ *
+ * @param ctor The model constructor.
+ * @returns The model properties.
+ */
 export function getProperties<T extends Model>(ctor: Function): ModelProperties<T> {
   let props = {};
   let attrs = getAttributes(ctor);

@@ -43,7 +43,7 @@ export class Association<T> extends Property<T> {
     this.name = name;
   }
 
-  /*
+  /**
    * Turns the association into its relevant property name.
    *
    * @returns The property name.

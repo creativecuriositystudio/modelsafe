@@ -1,3 +1,4 @@
+/* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
 import { assoc, HAS_ONE } from './association';

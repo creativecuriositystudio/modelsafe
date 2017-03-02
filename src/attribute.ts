@@ -182,7 +182,7 @@ export class Attribute<T> extends Property<T> {
     this.name = name;
   }
 
-  /*
+  /**
    * Turns the attribute into its relevant property name.
    *
    * @returns The property name.

@@ -1,3 +1,4 @@
+/* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
 import { attr, STRING } from './attribute';
@@ -5,11 +6,11 @@ import { assoc, BELONGS_TO, HAS_MANY } from './association';
 import { guessModelName, getProperties } from './metadata';
 import { model, Model, ModelProperties } from './model';
 
-/* tslint:disable */
+/* tslint:disable:class-name */
 class ANiceModelName {}
 class thisISA_WEIRD_ModelName {}
 class This_Is_Even_Weirder123 {}
-/* tslint:enable */
+/* tslint:enable:class-name */
 
 @model()
 class Comment extends Model {

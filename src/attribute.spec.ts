@@ -1,3 +1,4 @@
+/* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
 import { attr, InternalAttributeType, STRING, CHAR, TEXT,
