@@ -48,7 +48,7 @@ export class Association<T> extends Property<T> {
    *
    * @returns The property name.
    */
-  public compile(): string {
+  public toString(): string {
     return this.name;
   }
 }
@@ -82,6 +82,6 @@ export interface ModelAssociations {
  * @param target  The target model to associate to.
  * @param options Any extra Sequelize attribute options required.
  */
-export function assoc<T extends Model>(type: AssociationType, target?: ModelConstructor<T>, options?: any) {
+export function assoc<T extends Model>(type: AssociationType, target?: ModelConstructor<T>, options?: AssociationOptions) {
   return (ctor: Object, key: string | symbol) => defineAssociation(ctor, key, { ... options, type, target });
 }

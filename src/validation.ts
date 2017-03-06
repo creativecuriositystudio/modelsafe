@@ -1,5 +1,6 @@
 /** Contains the validation types. */
 import { defineAttributeValidation } from './metadata';
+import { Model, ModelConstructor } from './model';
 
 /** A type of validation on a model. */
 export enum Validation {
@@ -66,6 +67,43 @@ export const MAX = Validation.MAX;
 export const MIN = Validation.MIN;
 export const IS_ARRAY = Validation.IS_ARRAY;
 export const IS_CREDIT_CARD = Validation.IS_CREDIT_CARD;
+
+/**
+ * Errors with a model. Each model property can have
+ * an array of error messages.
+ */
+export type ModelErrors<T extends Model> = {
+  [P in keyof T]?: string[];
+};
+
+/**
+ * An error with a model's validations.
+ * This has a mapped errors object
+ * so that you access the errors by a specific model property.
+ */
+export class ValidationError<T extends Model> extends Error {
+  /** The model constructor. */
+  ctor: ModelConstructor<T>;
+
+  /** The model errors. */
+  errors: ModelErrors<T>;
+
+  /**
+   * Construct a validation error.
+   *
+   * @param ctor The model constructor this error is for.
+   * @param message The error message.
+   * @param err The model errors with all of the validation errors on it.
+   */
+  constructor(ctor: ModelConstructor<T>, message: string, errors: ModelErrors<T>) {
+    super(message);
+
+    this.name = 'ValidationError';
+    this.stack = new Error().stack;
+    this.ctor = ctor;
+    this.errors = errors;
+  }
+}
 
 /**
  * A custom validation function that can be used to validate

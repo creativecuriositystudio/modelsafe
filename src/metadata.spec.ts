@@ -43,9 +43,9 @@ describe('guessModelName', () => {
 
 describe('getProperties', () => {
   it('should map properties correctly', () => {
-    let props: ModelProperties<User> = getProperties(User);
+    let props: ModelProperties<User> = getProperties<User>(User);
 
-    chai.should().equal(props.name.compile(), 'name');
-    chai.should().equal(props.comments.compile(), 'comments');
+    chai.should().equal(props.name.toString(), 'name');
+    chai.should().equal(props.comments.toString(), 'comments');
   });
 });

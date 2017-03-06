@@ -187,7 +187,7 @@ export class Attribute<T> extends Property<T> {
    *
    * @returns The property name.
    */
-  public compile(): string {
+  public toString(): string {
     return this.name;
   }
 }
@@ -196,6 +196,18 @@ export class Attribute<T> extends Property<T> {
 export interface AttributeOptions {
   /** The type of the attribute. */
   type?: AttributeType;
+
+  /**
+   * Whether the attribute should be optional.
+   * Attributes are required by default.
+   */
+  optional?: boolean;
+
+  /** Whether the attribute is a primary key. */
+  primary?: boolean;
+
+  /** Whether the attribute is unique. */
+  unique?: boolean;
 }
 
 /** The attributes defined on a model. */
@@ -210,6 +222,6 @@ export interface ModelAttributes {
  * @param type    The type of the attribute.
  * @param options Any extra attribute options required.
  */
-export function attr(type: AttributeType, options?: any) {
+export function attr(type: AttributeType, options?: AttributeOptions) {
   return (target: Object, key: string | symbol) => defineAttribute(target, key, { ... options, type });
 }

@@ -41,7 +41,7 @@ export abstract class Model {
   ) {
     let [prop, target] = map(getProperties<T>(ctor));
     let assocs = getAssociations(ctor);
-    let key = prop.compile();
+    let key = prop.toString();
     let options = assocs[key];
 
     if (!type) {
@@ -61,7 +61,7 @@ export type ModelConstructor<T extends Model> = typeof Model & { new(): T };
  * can either be an association or attribute.
  */
 export type ModelProperties<T extends Model> = {
-  [P in keyof T]?: Property<T[P]>;
+  [P in keyof T]: Property<T[P]>;
 };
 
 /** The options that can be defined for a model. */

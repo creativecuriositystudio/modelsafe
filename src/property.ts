@@ -7,5 +7,5 @@ export abstract class Property<T> {
    *
    * @returns The property name.
    */
-  abstract compile(): string;
+  abstract toString(): string;
 }

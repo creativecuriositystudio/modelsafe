@@ -1,3 +1,9 @@
+# 0.3.0
+
+* Add primary attribute option
+* Add unqiue attribute option
+* Add validation error and mapped model errors type
+
 # 0.2.0
 
 * Change metadata keys to prevent nameclash

@@ -159,3 +159,4 @@ export function getProperties<T extends Model>(ctor: Function): ModelProperties<
 
   return props as ModelProperties<T>;
 }
+
