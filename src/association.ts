@@ -11,7 +11,7 @@ export enum AssociationType {
   HAS_MANY,
   BELONGS_TO,
   BELONGS_TO_MANY
-};
+}
 
 // Promote association types to top level so they are usable as squell.HAS_ONE, like normal attr types.
 export const HAS_ONE = AssociationType.HAS_ONE;
