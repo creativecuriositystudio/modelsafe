@@ -78,6 +78,18 @@ export interface ModelAssociations {
 export type AssociationTarget<T extends Model> = ModelConstructor<T> | (() => ModelConstructor<T>);
 
 /**
+ * Checks if the association target is a function that lazy loads
+ * a model constructor. If it's just a regular model constructor,
+ * it returns false.
+ *
+ * @param target The association target.
+ * @returns True if the target is a lazy load lambda, false otherwise.
+ */
+export function isLazyLoad(target: AssociationTarget<any>): boolean {
+  return !(target as Function).prototype;
+}
+
+/**
  * A decorator for a model association.
  * The association has a type and the model to associate to.
  * All association properties must be defined using this decorator in order

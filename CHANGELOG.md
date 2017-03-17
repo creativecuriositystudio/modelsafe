@@ -1,3 +1,7 @@
+# 0.5.1
+
+* Add `isLazyLoad` function for checking if association targets are lazily loaded
+
 # 0.5.0
 
 * Add option of instantiating model instance with initial data
