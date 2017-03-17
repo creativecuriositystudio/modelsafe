@@ -1,3 +1,7 @@
+# 0.4.0
+
+* Add lazy-load support to association targets in the `@assoc` decorator
+
 # 0.3.0
 
 * Add primary attribute option

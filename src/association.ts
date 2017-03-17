@@ -59,13 +59,23 @@ export interface AssociationOptions {
   type?: AssociationType;
 
   /** The target model of the association. */
-  target?: typeof Model;
+  target?: AssociationTarget<any>;
 }
 
 /** The assoations defined on a model. */
 export interface ModelAssociations {
   [key: string]: AssociationOptions;
 }
+
+/**
+ * A target for an association. This can either
+ * be a specific model or a function that lazily
+ * loads the target model.
+ *
+ * The lazy load method can be used when there is circular dependency
+ * issues.
+ */
+export type AssociationTarget<T extends Model> = ModelConstructor<T> | (() => ModelConstructor<T>);
 
 /**
  * A decorator for a model association.
@@ -82,6 +92,6 @@ export interface ModelAssociations {
  * @param target  The target model to associate to.
  * @param options Any extra Sequelize attribute options required.
  */
-export function assoc<T extends Model>(type: AssociationType, target?: ModelConstructor<T>, options?: AssociationOptions) {
+export function assoc<T extends Model>(type: AssociationType, target?: AssociationTarget<T>, options?: AssociationOptions) {
   return (ctor: Object, key: string | symbol) => defineAssociation(ctor, key, { ... options, type, target });
 }
