@@ -16,6 +16,7 @@
     "Zack Corr <zack@z0w0.me> (http://z0w0.me)"
   ],
   "scripts": {
+    "prepush": "npm run lint && npm test",
     "prepublish": "tsc",
     "build": "tsc",
     "docs": "typedoc --out docs src/index.ts",
@@ -29,6 +30,7 @@
     "@types/chai": "^3.4.35",
     "@types/mocha": "^2.2.33",
     "chai": "^3.5.0",
+    "husky": "^0.13.2",
     "mocha": "^3.2.0",
     "ts-node": "^2.1.0",
     "tslint": "^4.3.0",
