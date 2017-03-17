@@ -102,6 +102,10 @@ export class ValidationError<T extends Model> extends Error {
     this.stack = new Error().stack;
     this.ctor = ctor;
     this.errors = errors;
+
+    // Required in order for error instances to be able to use instanceof.
+    // SEE: https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md
+    (this as any).__proto__ = ValidationError.prototype;
   }
 }
 

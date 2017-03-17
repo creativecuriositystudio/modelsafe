@@ -1,3 +1,7 @@
+# 0.5.2
+
+* Fix `ValidationError` being able to use instanceof calls (gets around TypeScript 2.1+ issue)
+
 # 0.5.1
 
 * Add `isLazyLoad` function for checking if association targets are lazily loaded
