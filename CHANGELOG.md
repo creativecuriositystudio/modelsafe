@@ -1,3 +1,7 @@
+# 0.5.0
+
+* Add option of instantiating model instance with initial data
+
 # 0.4.0
 
 * Add lazy-load support to association targets in the `@assoc` decorator

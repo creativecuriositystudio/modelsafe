@@ -1,9 +1,10 @@
 /** Contains the model classes and decorators. */
+import * as _ from 'lodash';
+
 import { AssociationType } from './association';
 import { Attribute } from './attribute';
 import { defineModelOptions, defineAssociation, guessModelName,
          getProperties, getAssociations } from './metadata';
-
 import { Property } from './property';
 
 /**
@@ -14,6 +15,17 @@ import { Property } from './property';
  * and the model could be defined and queried on them separately.
  */
 export abstract class Model {
+  /**
+   * Construct a model instance, with optional initial data.
+   *
+   * @param data Any initial data for the instance.
+   *             This isn't typed because we don't
+   *             have knowledge of the child class here.
+   */
+  constructor(data?: {}) {
+    _.extend(this, data);
+  }
+
   /**
    * Associate a model with a target model under a specific property on the
    * source model. This is ideally used to solve circular dependencies
