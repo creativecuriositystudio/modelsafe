@@ -1,3 +1,7 @@
+# 0.6.0
+
+* Add `readOnly` metadata for attributes and assocations
+
 # 0.5.2
 
 * Fix `ValidationError` being able to use instanceof calls (gets around TypeScript 2.1+ issue)

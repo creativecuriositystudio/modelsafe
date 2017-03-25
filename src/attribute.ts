@@ -208,6 +208,9 @@ export interface AttributeOptions {
 
   /** Whether the attribute is unique. */
   unique?: boolean;
+
+  /** Whether the attribute is read-only. */
+  readOnly?: boolean;
 }
 
 /** The attributes defined on a model. */
@@ -223,5 +226,5 @@ export interface ModelAttributes {
  * @param options Any extra attribute options required.
  */
 export function attr(type: AttributeType, options?: AttributeOptions) {
-  return (target: Object, key: string | symbol) => defineAttribute(target, key, { ... options, type });
+  return (target: Object, key: string | symbol) => defineAttribute(target, key, { readOnly: false, ... options, type });
 }

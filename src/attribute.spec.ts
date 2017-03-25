@@ -20,7 +20,7 @@ describe('@attr', () => {
   it('should define correctly', () => {
     let attrs = getAttributes(Entity);
 
-    chai.assert.deepEqual(attrs['name'], { type: STRING });
+    chai.assert.deepEqual(attrs['name'], { type: STRING, readOnly: false });
   });
 });
 

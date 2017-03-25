@@ -60,6 +60,9 @@ export interface AssociationOptions {
 
   /** The target model of the association. */
   target?: AssociationTarget<any>;
+
+  /** Whether the association is read-only. */
+  readOnly?: boolean;
 }
 
 /** The assoations defined on a model. */
@@ -104,6 +107,14 @@ export function isLazyLoad(target: AssociationTarget<any>): boolean {
  * @param target  The target model to associate to.
  * @param options Any extra Sequelize attribute options required.
  */
-export function assoc<T extends Model>(type: AssociationType, target?: AssociationTarget<T>, options?: AssociationOptions) {
-  return (ctor: Object, key: string | symbol) => defineAssociation(ctor, key, { ... options, type, target });
+export function assoc<T extends Model>(type: AssociationType, target?: AssociationTarget<T>,
+                                       options?: AssociationOptions) {
+  return (ctor: Object, key: string | symbol) => defineAssociation(ctor, key, {
+    readOnly: false,
+
+    ... options,
+
+    type,
+    target
+  });
 }
