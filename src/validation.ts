@@ -113,10 +113,7 @@ export class ValidationError<T extends Model> extends Error {
  * A custom validation function that can be used to validate
  * an attribute's value.
  */
-export interface ValidationFunction {
-  /** Validate a value for an attribute. */
-  (value: any): boolean;
-}
+export type ValidationFunction = (value: any) => boolean;
 
 /** The options for a validation rule. */
 export interface ValidationOptions {
@@ -134,5 +131,5 @@ export interface ValidationOptions {
  * @param options Any extra validation options required.
  */
 export function validate(validation: Validation | ValidationFunction, options?: any) {
-  return (ctor: Object, key: string | symbol) => defineAttributeValidation(ctor, key, { ... options, validation });
+  return (ctor: object, key: string | symbol) => defineAttributeValidation(ctor, key, { ... options, validation });
 }

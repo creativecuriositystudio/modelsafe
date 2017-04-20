@@ -3,7 +3,7 @@ import * as chai from 'chai';
 
 import { attr, STRING } from './attribute';
 import { assoc, BELONGS_TO, HAS_MANY } from './association';
-import { guessModelName, getProperties } from './metadata';
+import { guessModelName, hasModelOptions, getProperties } from './metadata';
 import { model, Model, ModelProperties } from './model';
 
 /* tslint:disable:class-name */
@@ -30,6 +30,8 @@ class User extends Model {
   comments: Comment[];
 }
 
+class NotDecorated {}
+
 // Add the associaiton target we avoided adding for dependency reasons
 Model.associate(Comment, m => [m.user, User]);
 
@@ -38,6 +40,16 @@ describe('guessModelName', () => {
     chai.should().equal(guessModelName(ANiceModelName), 'aNiceModelName');
     chai.should().equal(guessModelName(thisISA_WEIRD_ModelName), 'thisIsaWeirdModelName');
     chai.should().equal(guessModelName(This_Is_Even_Weirder123), 'thisIsEvenWeirder123');
+  });
+});
+
+describe('hasModelOptions', () => {
+  it('should return true if a class has been decorated', () => {
+    chai.should().equal(hasModelOptions(User), true);
+  });
+
+  it('should return false if a class has been decorated', () => {
+    chai.should().equal(hasModelOptions(NotDecorated), false);
   });
 });
 

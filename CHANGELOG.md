@@ -1,3 +1,9 @@
+# 0.7.0
+
+* Fix `isLazyLoad` to just check if the target has been decorated and assume lazy load otherwises
+* Add `hasModelOptions` to check whether a class has been decorated as a model
+* Have `Model.associate` take an `AssociationTarget`
+
 # 0.6.0
 
 * Add `readOnly` metadata for attributes and assocations

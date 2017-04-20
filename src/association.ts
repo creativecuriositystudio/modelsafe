@@ -1,7 +1,5 @@
 /** Contains the association types. */
-import * as _ from 'lodash';
-
-import { defineAssociation } from './metadata';
+import { defineAssociation, hasModelOptions } from './metadata';
 import { Model, ModelConstructor } from './model';
 import { Property } from './property';
 
@@ -88,8 +86,14 @@ export type AssociationTarget<T extends Model> = ModelConstructor<T> | (() => Mo
  * @param target The association target.
  * @returns True if the target is a lazy load lambda, false otherwise.
  */
-export function isLazyLoad(target: AssociationTarget<any>): boolean {
-  return !(target as Function).prototype;
+export function isLazyLoad<T extends Model>(target: AssociationTarget<T>): boolean {
+  // This might seem a bit strange but basically we fall to this as there doesn't
+  // appear to be a nice way to check if something is a class vs. a function.
+  // So we return true if there's model options, (i.e. it's a decorated model)
+  // otherwise we just assume it's lazy loaded. We can do this because
+  // even if it's some arbitrary value and not a lazy loader, the safe
+  // will catch that because it requires a model decorator to be associated.
+  return !hasModelOptions(target);
 }
 
 /**
@@ -109,7 +113,7 @@ export function isLazyLoad(target: AssociationTarget<any>): boolean {
  */
 export function assoc<T extends Model>(type: AssociationType, target?: AssociationTarget<T>,
                                        options?: AssociationOptions) {
-  return (ctor: Object, key: string | symbol) => defineAssociation(ctor, key, {
+  return (ctor: object, key: string | symbol) => defineAssociation(ctor, key, {
     readOnly: false,
 
     ... options,

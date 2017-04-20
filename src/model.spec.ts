@@ -5,17 +5,17 @@ import { assoc, BELONGS_TO, HAS_MANY } from './association';
 import { getModelOptions, getAssociations } from './metadata';
 import { model, Model } from './model';
 
+@model({ name: 'manualModelName' })
+class ManualModel extends Model {
+}
+
 @model()
 class AutomaticModel extends Model {
   @assoc(BELONGS_TO)
-  test1: Object;
+  test1: object;
 
   @assoc(HAS_MANY)
-  test2: Object;
-}
-
-@model({ name: 'manualModelName' })
-class ManualModel extends Model {
+  test2: object;
 }
 
 describe('@model', () => {

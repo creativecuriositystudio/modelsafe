@@ -8,7 +8,9 @@
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "declaration": true
+    "declaration": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "exclude": [
     "dist",

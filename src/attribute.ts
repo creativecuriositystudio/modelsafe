@@ -226,5 +226,5 @@ export interface ModelAttributes {
  * @param options Any extra attribute options required.
  */
 export function attr(type: AttributeType, options?: AttributeOptions) {
-  return (target: Object, key: string | symbol) => defineAttribute(target, key, { readOnly: false, ... options, type });
+  return (target: object, key: string | symbol) => defineAttribute(target, key, { readOnly: false, ... options, type });
 }

@@ -1,8 +1,7 @@
 /** Contains the model classes and decorators. */
 import * as _ from 'lodash';
 
-import { AssociationType } from './association';
-import { Attribute } from './attribute';
+import { AssociationType, AssociationTarget } from './association';
 import { defineModelOptions, defineAssociation, guessModelName,
          getProperties, getAssociations } from './metadata';
 import { Property } from './property';
@@ -48,7 +47,7 @@ export abstract class Model {
    */
   static associate<T extends Model, U extends Model>(
     ctor: ModelConstructor<T>,
-    map: (props: ModelProperties<T>) => [Property<T>, ModelConstructor<U>],
+    map: (props: ModelProperties<T>) => [Property<any>, AssociationTarget<U>],
     type?: AssociationType
   ) {
     let [prop, target] = map(getProperties<T>(ctor));
@@ -60,7 +59,7 @@ export abstract class Model {
       type = options.type;
     }
 
-    defineAssociation(ctor.prototype, key, { ... options, type });
+    defineAssociation(ctor.prototype, key, { ... options, target, type });
   }
 }
 
@@ -91,6 +90,7 @@ export interface ModelOptions {
  * @param option Any extra model options required.
  */
 export function model(options?: ModelOptions) {
+  // tslint:disable-next-line:ban-types
   return (ctor: Function): void => {
     defineModelOptions(ctor, { name: guessModelName(ctor), ... options });
   };

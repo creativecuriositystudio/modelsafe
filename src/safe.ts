@@ -1,5 +1,5 @@
 /** Contains the safe type, which contains the model definitions. */
-import { getModelOptions, getProperties, getAttributes, getAssociations } from './metadata';
+import { getModelOptions, getProperties } from './metadata';
 import { Model, ModelConstructor, ModelProperties } from './model';
 
 /** A map of model names to model constructors. */

@@ -1,3 +1,4 @@
+/* tslint:disable:ban-types */
 /** Contains getters/setters for the model metadata. */
 import 'reflect-metadata';
 import * as _ from 'lodash';
@@ -5,7 +6,7 @@ import * as _ from 'lodash';
 import { Association, AssociationOptions, ModelAssociations } from './association';
 import { Attribute, AttributeOptions, ModelAttributes } from './attribute';
 import { Model, ModelOptions, ModelProperties } from './model';
-import { Validation, ValidationFunction, ValidationOptions } from './validation';
+import { ValidationOptions } from './validation';
 
 /** The meta key for a model's options on a model class. */
 export const MODEL_OPTIONS_META_KEY = 'modelsafe:options';
@@ -44,6 +45,19 @@ export function guessModelName(ctor: Function): string {
   }
 
   return _.camelCase(name);
+}
+
+/**
+ * Checks whether a model constructor has been decorated with the @model
+ * decorator. This can be used to check whether an object looks like a model,
+ * although there is no guarantee it's a valid model yet (since technically
+ * a model isn't valid unless it has a name defined).
+ *
+ * @param ctor The model constructor.
+ * @returns Whether the model constructor is decorated.
+ */
+export function hasModelOptions(ctor: Function): boolean {
+  return Reflect.hasMetadata(MODEL_OPTIONS_META_KEY, ctor.prototype);
 }
 
 /**
