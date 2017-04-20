@@ -57,7 +57,11 @@ export function guessModelName(ctor: Function): string {
  * @returns Whether the model constructor is decorated.
  */
 export function hasModelOptions(ctor: Function): boolean {
-  return Reflect.hasMetadata(MODEL_OPTIONS_META_KEY, ctor.prototype);
+  try {
+    return Reflect.hasMetadata(MODEL_OPTIONS_META_KEY, ctor.prototype);
+  } catch (err) {
+    return false;
+  }
 }
 
 /**

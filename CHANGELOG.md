@@ -1,3 +1,7 @@
+# 0.7.1
+
+* Catch errors during `hasModelOptions` in-case a non-object is given to `reflect-metadata`
+
 # 0.7.0
 
 * Fix `isLazyLoad` to just check if the target has been decorated and assume lazy load otherwises
