@@ -1,80 +1,24 @@
 /** Contains the validation types. */
-import { defineAttributeValidation } from './metadata';
 import { Model, ModelConstructor } from './model';
 
-/** A type of validation on a model. */
-export enum Validation {
-  IS,
-  NOT,
-  IS_EMAIL,
-  IS_URL,
-  IS_IP,
-  IS_IPV4,
-  IS_IPV6,
-  IS_ALPHA,
-  IS_ALPHANUMERIC,
-  IS_NUMERIC,
-  IS_INT,
-  IS_FLOAT,
-  IS_DECIMAL,
-  IS_LOWERCASE,
-  IS_UPPERCASE,
-  NOT_EMPTY,
-  EQUALS,
-  CONTAINS,
-  NOT_IN,
-  IS_IN,
-  NOT_CONTAINS,
-  LEN,
-  IS_UUID,
-  IS_DATE,
-  IS_AFTER,
-  IS_BEFORE,
-  MAX,
-  MIN,
-  IS_ARRAY,
-  IS_CREDIT_CARD
-}
-
-// Promote the validation types.
-export const IS = Validation.IS;
-export const NOT = Validation.NOT;
-export const IS_EMAIL = Validation.IS_EMAIL;
-export const IS_URL = Validation.IS_URL;
-export const IS_IP = Validation.IS_IP;
-export const IS_IPV4 = Validation.IS_IPV4;
-export const IS_IPV6 = Validation.IS_IPV6;
-export const IS_ALPHA = Validation.IS_ALPHA;
-export const IS_ALPHANUMERIC = Validation.IS_ALPHANUMERIC;
-export const IS_NUMERIC = Validation.IS_NUMERIC;
-export const IS_INT = Validation.IS_INT;
-export const IS_FLOAT = Validation.IS_FLOAT;
-export const IS_DECIMAL = Validation.IS_DECIMAL;
-export const IS_LOWERCASE = Validation.IS_LOWERCASE;
-export const IS_UPPERCASE = Validation.IS_UPPERCASE;
-export const NOT_EMPTY = Validation.NOT_EMPTY;
-export const EQUALS = Validation.EQUALS;
-export const CONTAINS = Validation.CONTAINS;
-export const NOT_IN = Validation.NOT_IN;
-export const IS_IN = Validation.IS_IN;
-export const NOT_CONTAINS = Validation.NOT_CONTAINS;
-export const LEN = Validation.LEN;
-export const IS_UUID = Validation.IS_UUID;
-export const IS_DATE = Validation.IS_DATE;
-export const IS_AFTER = Validation.IS_AFTER;
-export const IS_BEFORE = Validation.IS_BEFORE;
-export const MAX = Validation.MAX;
-export const MIN = Validation.MIN;
-export const IS_ARRAY = Validation.IS_ARRAY;
-export const IS_CREDIT_CARD = Validation.IS_CREDIT_CARD;
-
 /**
- * Errors with a model. Each model property can have
+ * Errors with the properties of a model. Each model property can have
  * an array of error messages.
  */
 export type ModelErrors<T extends Model> = {
   [P in keyof T]?: string[];
 };
+
+/**
+ * Errors common to a subset of a model's properties or the whole model.
+ */
+export interface CommonModelError {
+  /** Properties for the entire model. */
+  props?: string[];
+
+  /** The common error message, either for the joint properties or for the entire model. */
+  message: string;
+}
 
 /**
  * An error with a model's validations.
@@ -86,22 +30,28 @@ export class ValidationError<T extends Model> extends Error {
   ctor: ModelConstructor<T>;
 
   /** The model errors. */
-  errors: ModelErrors<T>;
+  errors?: ModelErrors<T>;
+
+  /** The model errors that are common across the entire model or multiple properties. */
+  commonErrors?: CommonModelError[];
 
   /**
    * Construct a validation error.
    *
    * @param ctor The model constructor this error is for.
    * @param message The error message.
-   * @param err The model errors with all of the validation errors on it.
+   * @param errors The model errors with all of the validation errors on it.
+   * @param commonErrors Any common errors for a subset of the properties or the whole model.
    */
-  constructor(ctor: ModelConstructor<T>, message: string, errors: ModelErrors<T>) {
+  constructor(ctor: ModelConstructor<T>, message: string,
+              errors?: ModelErrors<T>, commonErrors?: CommonModelError[]) {
     super(message);
 
     this.name = 'ValidationError';
     this.stack = new Error().stack;
     this.ctor = ctor;
     this.errors = errors;
+    this.commonErrors = commonErrors;
 
     // Required in order for error instances to be able to use instanceof.
     // SEE: https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md
@@ -109,27 +59,39 @@ export class ValidationError<T extends Model> extends Error {
   }
 }
 
-/**
- * A custom validation function that can be used to validate
- * an attribute's value.
- */
-export type ValidationFunction = (value: any) => boolean;
-
-/** The options for a validation rule. */
+/** Options to be passed to a validation function. */
 export interface ValidationOptions {
-  /** The validation to apply. */
-  validation?: Validation | ValidationFunction;
+  /**
+   * The error message template for the validation.
+   *
+   * This is a Lodash template string, so for formatting guides
+   * the documentation for `_.template'. The following variables are available to the template:
+   *
+   * * `value`: The value that was validated
+   * * `path`: The attribute path being validated
+   * * `error`: The error that the specific validation returned
+   *
+   * If none of these values are relevant to the error message, then
+   * a plain string can be used.
+   *
+   * @see https://lodash.com/docs/4.17.4#template
+   */
+  message?: string;
 }
 
 /**
- * A decorator used on model attributes to define validation rules.
- * A message and arguments can be provided which will be passed to the equivalent
- * Sequelize validator. For more detail on the arguments that can be provided,
- * check the Sequelize validation definition docs.
+ * A validation function that can be used to validate
+ * an attribute's value, with some additional options.
  *
- * @param validation A validation type or a custom validation function.
- * @param options Any extra validation options required.
+ * The function should reject if there was an error and resolve if successfully validated.
  */
-export function validate(validation: Validation | ValidationFunction, options?: any) {
-  return (ctor: object, key: string | symbol) => defineAttributeValidation(ctor, key, { ... options, validation });
+export type ValidationFunction = (value: any, options?: ValidationOptions) => Promise<void>;
+
+/** A validation to be run on a model attribute. */
+export interface Validation {
+  /** The function for validating the attribute. */
+  cb: ValidationFunction;
+
+  /** Any options to provided to the validation function. */
+  options?: ValidationOptions;
 }

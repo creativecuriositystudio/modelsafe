@@ -1,10 +1,12 @@
 /* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
-import { attr, STRING } from './attribute';
-import { assoc, BELONGS_TO, HAS_MANY } from './association';
-import { guessModelName, hasModelOptions, getProperties } from './metadata';
-import { model, Model, ModelProperties } from './model';
+import { STRING, INTEGER } from './attribute';
+import { BELONGS_TO, HAS_MANY } from './association';
+import { attr, assoc, model, primary, unique,
+         required, optional, defaultValue,
+         guessModelName, hasModelOptions, getProperties, getAttributes } from './metadata';
+import { Model, ModelProperties } from './model';
 
 /* tslint:disable:class-name */
 class ANiceModelName {}
@@ -14,10 +16,28 @@ class This_Is_Even_Weirder123 {}
 
 @model()
 class Comment extends Model {
+  @attr(INTEGER)
+  @primary
+  id: number;
+
+  @attr(INTEGER)
+  @required
+  likes: number;
+
+  @attr(STRING)
+  @unique
+  subject: string;
+
+  @attr(STRING)
+  @optional
+  @defaultValue('None')
+  replyTo?: string;
+
   @attr(STRING)
   message: string;
 
   @assoc(BELONGS_TO)
+  @required
   user: User;
 }
 
@@ -32,8 +52,35 @@ class User extends Model {
 
 class NotDecorated {}
 
-// Add the associaiton target we avoided adding for dependency reasons
-Model.associate(Comment, m => [m.user, User]);
+describe('@primary', () => {
+  it('should define attributes as primary', () => {
+    getAttributes(Comment).id.primary.should.equal(true);
+  });
+});
+
+describe('@unique', () => {
+  it('should define attributes as unique', () => {
+    getAttributes(Comment).subject.unique.should.equal(true);
+  });
+});
+
+describe('@required', () => {
+  it('should define attributes as required', () => {
+    getAttributes(Comment).likes.optional.should.equal(false);
+  });
+});
+
+describe('@optional', () => {
+  it('should define attributes as optional', () => {
+    getAttributes(Comment).replyTo.optional.should.equal(true);
+  });
+});
+
+describe('@defaultValue', () => {
+  it('should define attributes with a relevant default value', () => {
+    getAttributes(Comment).replyTo.defaultValue.should.equal('None');
+  });
+});
 
 describe('guessModelName', () => {
   it('should guess names correctly', () => {

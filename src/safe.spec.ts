@@ -1,8 +1,9 @@
 /* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
-import { attr, STRING } from './attribute';
-import { model, Model } from './model';
+import { STRING } from './attribute';
+import { Model } from './model';
+import { model, attr } from './metadata';
 import { Safe } from './safe';
 
 @model()

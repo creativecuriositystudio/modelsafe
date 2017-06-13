@@ -1,6 +1,6 @@
 {
   "name": "modelsafe",
-  "version": "0.7.1",
+  "version": "1.0.0-alpha.1",
   "main": "dist/index.js",
   "bugs": "https://github.com/creativecuriositystudio/modelsafe/issues",
   "keywords": [

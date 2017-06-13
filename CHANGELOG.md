@@ -1,3 +1,19 @@
+# 1.0.0-alpha.1
+
+* [CHANGE] Requires ES6 TypeScript
+* [CHANGE] Removed `Model.associate` in favour of lazy-loaded association decoration
+* [FEATURE] A `defaultValue` option for attributes that will be automatically set on new
+  model instances unless you provide the `defaults` option in constructing the model as `false`
+* [FEATURE] `ValidationError`s now have a `commonErrors` property, which is a list of
+  errors that are either for a subset of the model's properties or the whole model
+* [FEATURE] Added multiple decorators for more declarative definitions of models
+  * `@defaultValue` for decorating the default value of an attribute
+  * `@required` for decorating an association or attribute as required
+  * `@optional` for decorating an association or attribute as optional
+  * `@readOnly` for decorating an attribute as read-only
+  * `@primary` for decorating an attribute as a primary key
+  * `@unique` for decorating an attribute as unique
+
 # 0.7.1
 
 * Catch errors during `hasModelOptions` in-case a non-object is given to `reflect-metadata`

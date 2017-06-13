@@ -1,6 +1,8 @@
 /** Contains the attribute types. */
-import { defineAttribute } from './metadata';
+import * as _ from 'lodash';
+
 import { Property } from './property';
+import { ValidationFunction, ValidationOptions } from './validation';
 
 /**
  * The internal type of an attribute.
@@ -33,6 +35,9 @@ export interface AttributeType {
   /** The internal attribute type. */
   type: InternalAttributeType;
 
+  /** Any validation function to perform checks on a instance's attribute value/type. */
+  validate?: ValidationFunction;
+
   /** Any options for the attribute type. */
   options?: AttributeTypeOptions;
 }
@@ -59,10 +64,17 @@ export type AttributeTypeOptions = EnumAttributeTypeOptions | ArrayAttributeType
  * Build an attribute from an internal attribute type and options.
  *
  * @param type The internal attribute type.
- * @param options Optional attribute options.
+ * @param validate An attribute type/value validation function if required.
+ * @param options Any attribute type options if required.
  */
-function buildAttributeType(type: InternalAttributeType, options?: AttributeTypeOptions): AttributeType {
-  let attrType: AttributeType = { type };
+function buildAttributeType(type: InternalAttributeType,
+                            validate?: ValidationFunction,
+                            options?: AttributeTypeOptions): AttributeType {
+  let attrType: AttributeType =  { type };
+
+  if (validate) {
+    attrType.validate = validate;
+  }
 
   if (options) {
     attrType.options = options;
@@ -141,7 +153,11 @@ export const BLOB = buildAttributeType(InternalAttributeType.BLOB);
  * @returns The ENUM attribute type.
  */
 export function ENUM(values: string[]): AttributeType {
-  return buildAttributeType(InternalAttributeType.ENUM, { values });
+  return buildAttributeType(InternalAttributeType.ENUM, async (value: any) => {
+    if (value && values.indexOf(value) === -1) {
+      throw new Error('Not a known enumeration value');
+    }
+  }, { values });
 }
 
 /**
@@ -152,7 +168,11 @@ export function ENUM(values: string[]): AttributeType {
  * @returns The ARRAY attribute type.
  */
 export function ARRAY(contained: AttributeType): AttributeType {
-  return buildAttributeType(InternalAttributeType.ARRAY, { contained });
+  return buildAttributeType(InternalAttributeType.ARRAY, async (value: any) => {
+    if (!_.isArray(value)) {
+      throw new Error('Not an array');
+    }
+  }, { contained });
 }
 
 /**
@@ -211,20 +231,32 @@ export interface AttributeOptions {
 
   /** Whether the attribute is read-only. */
   readOnly?: boolean;
+
+  /**
+   * The default value for the attribute.
+   * This will be automatically set on a model
+   * when it is constructed for the first time.
+   */
+  defaultValue?: any;
+
+  /**
+   * The error message template for when a value is marked as required but does not exist.
+   * This is the same format as the `ValidationOptions` message.
+   *
+   * @see ValidationOptions
+   */
+  requiredMessage?: string;
+
+  /**
+   * The error message template for an attribute type's validation. This can be
+   * used to change the message for the type validation.
+   *
+   * @see ValidationOptions
+   */
+  validationOptions?: ValidationOptions;
 }
 
 /** The attributes defined on a model. */
 export interface ModelAttributes {
   [key: string]: AttributeOptions;
-}
-
-/**
- * A decorator for model attributes for specifying an attribute and its type.
- * This must be used on a model's property in order for the property to be recognised as an attribute.
- *
- * @param type    The type of the attribute.
- * @param options Any extra attribute options required.
- */
-export function attr(type: AttributeType, options?: AttributeOptions) {
-  return (target: object, key: string | symbol) => defineAttribute(target, key, { readOnly: false, ... options, type });
 }

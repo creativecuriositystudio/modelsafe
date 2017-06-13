@@ -1,12 +1,16 @@
 /* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
-import { assoc, BELONGS_TO, HAS_MANY } from './association';
-import { getModelOptions, getAssociations } from './metadata';
-import { model, Model } from './model';
+import { STRING } from './attribute';
+import { BELONGS_TO, HAS_MANY } from './association';
+import { model, attr, defaultValue, assoc, getModelOptions } from './metadata';
+import { Model } from './model';
 
 @model({ name: 'manualModelName' })
 class ManualModel extends Model {
+  @attr(STRING)
+  @defaultValue('This is a name')
+  name: string;
 }
 
 @model()
@@ -33,21 +37,13 @@ describe('@model', () => {
 });
 
 describe('Model', () => {
-  describe('#associate', () => {
-    it('should override association types if provided', () => {
-      Model.associate(AutomaticModel, m => [m.test1, ManualModel], HAS_MANY);
-
-      let assocs = getAssociations(AutomaticModel);
-
-      assocs['test1'].type.should.equal(HAS_MANY);
+  describe('#constructor', () => {
+    it('should construct with default values set', () => {
+      new ManualModel().name.should.equal('This is a name');
     });
 
-    it('should keep @assoc definitions if no association type is provided', () => {
-      Model.associate(AutomaticModel, m => [m.test2, ManualModel]);
-
-      let assocs = getAssociations(AutomaticModel);
-
-      assocs['test2'].type.should.equal(HAS_MANY);
+    it('should construct with user-provided values set', () => {
+      new ManualModel({ name: 'A different name' }).name.should.equal('A different name');
     });
   });
 });

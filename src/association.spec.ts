@@ -1,9 +1,9 @@
 /* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
-import { assoc, HAS_ONE, isLazyLoad } from './association';
-import { getAssociations } from './metadata';
-import { model, Model } from './model';
+import { HAS_ONE, isLazyLoad } from './association';
+import { model, assoc, getAssociations } from './metadata';
+import { Model } from './model';
 
 @model()
 export class OtherEntity extends Model {}
@@ -18,7 +18,7 @@ describe('@assoc', () => {
   it('should define correctly', () => {
     let assocs = getAssociations(Entity);
 
-    chai.assert.deepEqual(assocs['other'], { type: HAS_ONE, target: OtherEntity, readOnly: false });
+    chai.assert.deepEqual(assocs['other'], { type: HAS_ONE, target: OtherEntity });
   });
 });
 

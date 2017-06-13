@@ -1,10 +1,28 @@
 /** Contains the model classes and decorators. */
 import * as _ from 'lodash';
 
-import { AssociationType, AssociationTarget } from './association';
-import { defineModelOptions, defineAssociation, guessModelName,
-         getProperties, getAssociations } from './metadata';
+import { getAttributes, getAttributeValidations } from './metadata';
 import { Property } from './property';
+import { ModelErrors, ValidationError } from './validation';
+
+/** Options for constructing a model instance. */
+export interface ModelConstructorOptions {
+  /**
+   * Whether the model constructor should merge all default values
+   * onto the model instance.
+   */
+  defaults: boolean;
+}
+
+/** Options for serializing a JSON object from a model instance. */
+// tslint:disable-next-line:no-empty-interface
+export interface SerializeOptions {}
+
+/** Options for deserializing a JSON object to a model instance. */
+export interface DeserializeOptions {
+  /** Whether to run validations to ensure the JSON data is valid. */
+  validate: boolean;
+}
 
 /**
  * The abstract model class.
@@ -17,49 +35,199 @@ export abstract class Model {
   /**
    * Construct a model instance, with optional initial data.
    *
-   * @param data Any initial data for the instance.
-   *             This isn't typed because we don't
-   *             have knowledge of the child class here.
+   * @param data    Any initial data for the instance.
+   *                This isn't typed because we don't
+   *                have knowledge of the child class here.
+   * @param options Any extra options for the model construction.
    */
-  constructor(data?: {}) {
-    _.extend(this, data);
+  constructor(data?: object, options?: Partial<ModelConstructorOptions>) {
+    options = {
+      defaults: true,
+
+      ... options
+    };
+
+    // Merge default values on the model.
+    if (options.defaults) {
+      let attrs = getAttributes(this.constructor);
+
+      for (let key of Object.keys(attrs)) {
+        let attr = attrs[key];
+
+        if (typeof (attr.defaultValue) !== 'undefined') {
+          this[key] = attr.defaultValue;
+        }
+      }
+    }
+
+    // Merge user-provided values onto the instance.
+    _.merge(this, data);
   }
 
   /**
-   * Associate a model with a target model under a specific property on the
-   * source model. This is ideally used to solve circular dependencies
-   * and situations where you need to associate to a model that is not yet
-   * defined.
+   * De-serializes a JSON object into a model instance.
+   * This will pick the attributes and associations that have
+   * been decorated on the model and throw away everything else.
    *
-   * Ideally the association should still be defined using the `@assoc` decorator,
-   * but the target constructor shouldn't be provided and this function called
-   * later instead. However, that is not necessarily required as you
-   * can use this function to associate a model that to another without
-   * first decorating the model property that the association lives under.
+   * On top of this the underlying types of the data will be checked
+   * to ensure they confirm to their decorated types and decorated validations
+   * will also run. This behaviour can be disabled by turning the `validate`
+   * option to `false`.
    *
-   * @param ctor The source model constructor.
-   * @param map A function that takes the source model's property and returns
-   *            the model property the association is under and the target
-   *            model for the association.
-   * @param type An optional association type if you would like to manually
-   *             define the type. Defining the type is recommended
-   *             through `@assoc` instead of using this.
+   * Default values will not be set on the deserialized data.
+   *
+   * @param data    The JSON data to deserialize.
+   * @param options Any extra options to use for deserialization.
+   * @returns       A promise that resolves with a deserialized model,
+   *                otherwise rejecting with a validation error if validations were enabled.
    */
-  static associate<T extends Model, U extends Model>(
-    ctor: ModelConstructor<T>,
-    map: (props: ModelProperties<T>) => [Property<any>, AssociationTarget<U>],
-    type?: AssociationType
-  ) {
-    let [prop, target] = map(getProperties<T>(ctor));
-    let assocs = getAssociations(ctor);
-    let key = prop.toString();
-    let options = assocs[key];
-
-    if (!type) {
-      type = options.type;
+  static async deserialize<T extends Model>(data: object, options?: DeserializeOptions): Promise<T> {
+    // Force it to be a plain object in case it isn't already.
+    if (!_.isPlainObject(data)) {
+      data = _.toPlainObject(data);
     }
 
-    defineAssociation(ctor.prototype, key, { ... options, target, type });
+    let instance = new (this as ModelConstructor<T>)(data, { defaults: false }) as T;
+
+    if (options.validate) {
+      await instance.validate();
+    }
+
+    return instance;
+  }
+
+  /**
+   * Serializes a model instance into a JSON object.
+   *
+   * This will the attributes and associations that have been decorated on the model and throw
+   * away everything else.
+   *
+   * @param instance The instance to serialize to JSON.
+   * @param _options Any extra options to use for serialization.
+   * @returns        A promise that resolves with a serialized model, otherwise rejecting with an error.
+   */
+  static async serialize<T extends Model>(instance: T, _options?: SerializeOptions): Promise<object> {
+    return _.toPlainObject(instance);
+  }
+
+  /**
+   * Serialize a model instance into a JSON object.
+   *
+   * See the static serialize method for more information.
+   *
+   * @param options Any extra options to use for serialization.
+   * @returns       A promise that resolves with a serialized model, otherwise rejecting with an error.
+   */
+  async serialize(options?: SerializeOptions): Promise<object> {
+    return (this.constructor as typeof Model).serialize(this, options);
+  }
+
+  /**
+   * Check that a model instance passes its validations.
+   * This will check that the instance's data has types that
+   * match the decorated attribute types and also run
+   * any additional decorated attribute validations.
+   *
+   * This throws an error if there was a validation failure, otherwise
+   * resolving with nothing in the case of success.
+   *
+   * @returns A promise that resolves successfully or
+   *          rejects with a `ValidationError` if there was a validation error
+   */
+  async validate(): Promise<void> {
+    let attrs = getAttributes(this.constructor);
+    let errors: ModelErrors<any> = {};
+    let hadError = false;
+
+    // Validate all attributes
+    for (let key of Object.keys(attrs)) {
+      let attr = attrs[key];
+      let attrErrors = [];
+      let validations = getAttributeValidations(this.constructor, key);
+      let value = this[key];
+      let templateDefault = '<%= error %>';
+      let templateArgs = {
+        path: key,
+        value
+      };
+
+      if (_.isNil(value)) {
+        if (attr.optional) {
+          // There's no value and the field is optional.
+          // Don't perform any validations on this attribute.
+          continue;
+        } else {
+          // There's no value and the field is required. Show an error.
+          // Validate that non-optional attributes exist on the instance.
+          attrErrors.push(_.template(attr.requiredMessage || templateDefault)({
+            ... templateArgs,
+
+            error: 'Value is required'
+          }));
+        }
+      }
+
+      // Validate the decorated attribute type if it has a validation function
+      if (typeof (attr.type.validate) === 'function') {
+        try {
+          await attr.type.validate(this[key]);
+        } catch (err) {
+          let template = templateDefault;
+          let validationOptions = attr.validationOptions;
+
+          if (validationOptions && validationOptions.message) {
+            template = validationOptions.message;
+          }
+
+          attrErrors.push(_.template(template)({
+            ... templateArgs,
+
+            error: err.message
+          }));
+        }
+      }
+
+      // We try the attribute validations separately,
+      // since we want to capture both attribute type validations and other validations
+      // at the same time. We also want all validations to trigger, so we try/catch
+      // inside the for loop.
+      for (let validation of validations) {
+        let validationOptions = validation.options;
+
+        try {
+          await validation.cb(value, validationOptions);
+        } catch (err) {
+          let template = templateDefault;
+
+          if (validationOptions && validationOptions.message) {
+            template = validationOptions.message;
+          }
+
+          attrErrors.push(_.template(template)({
+            ... templateArgs,
+
+            error: err.message
+          }));
+        }
+      }
+
+      // Flag we had at least one error so we can tell
+      // whether to throw an error.
+      if (attrErrors.length > 0) {
+        hadError = true;
+      }
+
+      errors[key] = [
+        ... errors[key],
+
+        attrErrors
+      ];
+    }
+
+    // Only throw if there was at least one error, otherwise validation was successful
+    if (hadError) {
+      throw new ValidationError(this.constructor as ModelConstructor<any>, 'Validation error', errors);
+    }
   }
 }
 
@@ -79,19 +247,4 @@ export type ModelProperties<T extends Model> = {
 export interface ModelOptions {
   /** The name of the model. */
   name?: string;
-}
-
-/**
- * A decorater for model classes.
- * This must be used on every model class in order for it to be interacted with.
- * By default the model name is generated from the class name, but this
- * can be overidden with the extra model options.
- *
- * @param option Any extra model options required.
- */
-export function model(options?: ModelOptions) {
-  // tslint:disable-next-line:ban-types
-  return (ctor: Function): void => {
-    defineModelOptions(ctor, { name: guessModelName(ctor), ... options });
-  };
 }

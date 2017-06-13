@@ -1,14 +1,15 @@
 /* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
-import { attr, InternalAttributeType, STRING, CHAR, TEXT,
+import { InternalAttributeType, STRING, CHAR, TEXT,
          INTEGER, BIGINT, FLOAT, REAL,
          DOUBLE, DECIMAL, BOOLEAN, TIME,
          DATE, JSON, JSONB, BLOB,
-         ENUM, ARRAY } from './attribute';
+         ENUM, ARRAY, ArrayAttributeTypeOptions,
+         EnumAttributeTypeOptions } from './attribute';
 
-import { getAttributes } from './metadata';
-import { model, Model } from './model';
+import { model, attr, getAttributes } from './metadata';
+import { Model } from './model';
 
 @model()
 export class Entity extends Model {
@@ -20,7 +21,7 @@ describe('@attr', () => {
   it('should define correctly', () => {
     let attrs = getAttributes(Entity);
 
-    chai.assert.deepEqual(attrs['name'], { type: STRING, readOnly: false });
+    chai.assert.deepEqual(attrs['name'], { type: STRING });
   });
 });
 
@@ -48,40 +49,38 @@ describe('AttributeType', () => {
 
     describe(`#${key}`, () => {
       it('should instantiate correctly', () => {
-        chai.assert.deepEqual(externalType, {
-          type: internalType
-        });
+        chai.should().equal(externalType.type, internalType);
       });
     });
   }
 
   describe('#ENUM', () => {
     it('should instantiate correctly', () => {
-      chai.assert.deepEqual(ENUM(['a', 'b', 'c']), {
-        type: InternalAttributeType.ENUM,
-        options: { values: ['a', 'b', 'c'] }
-      });
+      let type = ENUM(['a', 'b', 'c']);
+      let options = type.options as EnumAttributeTypeOptions;
+
+      type.type.should.equal(InternalAttributeType.ENUM);
+      options.values.should.deep.equal(['a', 'b', 'c']);
     });
   });
 
   describe('#ARRAY', () => {
     it('should instantiate correctly', () => {
-      chai.assert.deepEqual(ARRAY(STRING), {
-        type: InternalAttributeType.ARRAY,
-        options: { contained: STRING }
-      });
+      let type = ARRAY(STRING);
+      let options = type.options as ArrayAttributeTypeOptions;
+
+      type.type.should.equal(InternalAttributeType.ARRAY);
+      options.contained.should.equal(STRING);
     });
 
     it('should instantiate recursive correctly', () => {
-      chai.assert.deepEqual(ARRAY(ARRAY(STRING)), {
-        type: InternalAttributeType.ARRAY,
-        options: {
-          contained: {
-            type: InternalAttributeType.ARRAY,
-            options: { contained: STRING }
-          }
-        }
-      });
+      let type = ARRAY(ARRAY(STRING));
+      let options = type.options as ArrayAttributeTypeOptions;
+      let containedOptions = options.contained.options as ArrayAttributeTypeOptions;
+
+      type.type.should.equal(InternalAttributeType.ARRAY);
+      options.contained.type.should.equal(InternalAttributeType.ARRAY);
+      containedOptions.contained.should.equal(STRING);
     });
   });
 });
