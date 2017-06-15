@@ -22,6 +22,12 @@ class AutomaticModel extends Model {
   test2: object;
 }
 
+@model()
+class SerialModel extends Model {
+  @attr(DATE)
+  someDate: Date;
+}
+
 describe('@model', () => {
   it('should guess names', () => {
     let options = getModelOptions(AutomaticModel);

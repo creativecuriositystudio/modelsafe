@@ -81,7 +81,16 @@ export abstract class Model {
    *                otherwise rejecting with a validation error if validations were enabled.
    */
   static async deserialize<T extends Model>(data: object, options?: DeserializeOptions): Promise<T> {
+    // Validate by default
+    options = {
+      validate: true,
+
+      ... options
+    };
+
     // Force it to be a plain object in case it isn't already.
+    // This allows weird behaviour like passing in an existing model
+    // class instance to be supported.
     if (!_.isPlainObject(data)) {
       data = _.toPlainObject(data);
     }
