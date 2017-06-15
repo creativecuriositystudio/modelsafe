@@ -1,7 +1,8 @@
 # 1.0.0-alpha.1
 
-* [CHANGE] Requires ES6 TypeScript
-* [CHANGE] Removed unused attribute types
+* [CHANGE] Uses the ES6 environment with `tsconfig.json`
+* [CHANGE] Removed unused attribute types `DECIMAL`, `FLOAT`/`DOUBLE`/ (in favour of `REAL`), `JSONB`
+* [CHANGE] Renamed `JSON` to `OBJECT`, is now for plain object types. JSON strings should use `STRING`
 * [CHANGE] Removed `Model.associate` in favour of lazy-loaded association decoration
 * [FEATURE] A `defaultValue` option for attributes that will be automatically set on new
   model instances unless you provide the `defaults` option in constructing the model as `false`
@@ -20,9 +21,25 @@
   * Validates with any extra validations decorated through the `@validate` decorator
   * Validates that attributes that have `optional` set to `false` have values provided
 * Introduced a series of built-in decoratable validations, specifically:
-  * IS_EMAIL, which is aliased under the `@email` decorator
-  *
-  *
+  * `@email`
+  * `@url`
+  * `@uuid`
+  * `@json`
+  * `@hex`
+  * `@alpha`
+  * `@alphanumeric`
+  * `@base64`
+  * `@uppercase`
+  * `@lowercase`
+  * `@ip`
+  * `@matches`
+  * `@gt`
+  * `@gte`
+  * `@lt`
+  * `@lte`
+  * `@length`
+  * `@minLength`
+  * `@maxLength`
 * [FEATURE] Add serialization and de-serialization from JSON. De-serialization performs
   validations by default but this can be disabled through an option.
   This can be used for sending or receiving the data of ModelSafe model instances.

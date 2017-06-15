@@ -86,6 +86,7 @@ export abstract class Model {
       data = _.toPlainObject(data);
     }
 
+    // Don't merge default values on during construction because we want the data 'as-is'
     let instance = new (this as ModelConstructor<T>)(data, { defaults: false }) as T;
 
     if (options.validate) {

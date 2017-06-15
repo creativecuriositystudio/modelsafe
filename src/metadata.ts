@@ -6,7 +6,11 @@ import * as _ from 'lodash';
 import { AssociationType, AssociationTarget, AssociationOptions, ModelAssociations } from './association';
 import { AttributeType, AttributeOptions, ModelAttributes } from './attribute';
 import { Model, ModelOptions } from './model';
-import { Validation, ValidationFunction } from './validation';
+import { Validation, ValidationFunction,
+         IS_EMAIL, IS_URL, IS_UUID, IS_JSON, IS_HEX,
+         IS_ALPHA, IS_ALPHANUMERIC, IS_BASE64, IS_UPPERCASE,
+         IS_LOWERCASE, IS_IP, MATCHES, GT, LT, GTE, LTE,
+         LENGTH, MIN_LENGTH, MAX_LENGTH } from './validation';
 
 /** The meta key for a model's options on a model class. */
 export const MODEL_OPTIONS_META_KEY = 'modelsafe:options';
@@ -118,11 +122,7 @@ export function defineAttribute(ctor: Object, key: string | symbol, options: Att
  * @param validation The validation to define.
  */
 export function defineAttributeValidation(ctor: Object, key: string | symbol, validation: Validation) {
-  let validations = [
-    ... Reflect.getMetadata(ATTR_VALIDATIONS_META_KEY, ctor, key),
-
-    validation
-  ];
+  let validations = (Reflect.getMetadata(ATTR_VALIDATIONS_META_KEY, ctor, key) || []).concat(validation);
 
   Reflect.defineMetadata(ATTR_VALIDATIONS_META_KEY, validations, ctor, key);
 }
@@ -289,4 +289,80 @@ export function unique(target: object, key: string | symbol) {
   defineAttribute(target, key, {
     unique: true
   });
+}
+
+/** A decorator for validating attributes are email addresses. */
+export const email = validate(IS_EMAIL);
+
+/** A decorator for validating attributes are URLs. */
+export const url = validate(IS_URL);
+
+/** A decorator for validating attributes are v3, v4 or v5 UUIDs. */
+export const uuid = validate(IS_UUID);
+
+/**
+ * A decorator for validating attributes are sane JSON strings.
+ * This does not validate JSON-like objects, only strings.
+ */
+export const json = validate(IS_JSON);
+
+/** A decorator for validating attributes are hex strings. */
+export const hex = validate(IS_HEX);
+
+/** A decorator for validating attributes are alphabetic. */
+export const alpha = validate(IS_ALPHA);
+
+/** A decorator for validating attributes are alphanumeric. */
+export const alphanumeric = validate(IS_ALPHANUMERIC);
+
+/** A decorator for validating attributes are sane base64 strings. */
+export const base64 = validate(IS_BASE64);
+
+/** A decorator for validating attributes are uppercase strings. */
+export const uppercase = validate(IS_UPPERCASE);
+
+/** A decorator for validating attributes are lowercase strings. */
+export const lowercase = validate(IS_LOWERCASE);
+
+/** A decorator for validating attributes are sane IP addresses. */
+export const ip = validate(IS_IP);
+
+/** A decorator for validating attributes match a regex. */
+export function matches(regex: RegExp) {
+  return validate(MATCHES(regex));
+}
+
+/** A decorator for validating attributes are greater than a number. */
+export function gt(other: number) {
+  return validate(GT(other));
+}
+
+/** A decorator for validating attributes are less than a number. */
+export function lt(other: number) {
+  return validate(LT(other));
+}
+
+/** A decorator for validating attributes are greater than or equal to a number. */
+export function gte(other: number) {
+  return validate(GTE(other));
+}
+
+/** A decorator for validating attributes are less than or equal to a number. */
+export function lte(other: number) {
+  return validate(LTE(other));
+}
+
+/** A decorator for validating attributes are of a specific array or string length. */
+export function length(len: number) {
+  return validate(LENGTH(len));
+}
+
+/** A decorator for validating attributes are of a minimum array or string length. */
+export function minLength(len: number) {
+  return validate(MIN_LENGTH(len));
+}
+
+/** A decorator for validating attributes are of a maximum array or string length. */
+export function maxLength(len: number) {
+  return validate(MAX_LENGTH(len));
 }

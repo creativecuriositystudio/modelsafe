@@ -18,8 +18,10 @@
   "scripts": {
     "prepush": "npm run lint && npm test",
     "prepublish": "npm run build",
+    "publish": "npm run docs:deploy",
     "build": "tsc",
     "docs": "typedoc --out docs src/index.ts",
+    "docs:deploy": "npm run docs && gh-pages -d docs",
     "test": "mocha --opts mocha.opts",
     "test:auto": "mocha --opts mocha.opts --watch",
     "lint": "tslint --format stylish --type-check --project tsconfig.json",
