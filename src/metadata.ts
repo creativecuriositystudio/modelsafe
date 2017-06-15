@@ -3,9 +3,9 @@
 import 'reflect-metadata';
 import * as _ from 'lodash';
 
-import { Association, AssociationType, AssociationTarget, AssociationOptions, ModelAssociations } from './association';
-import { Attribute, AttributeType, AttributeOptions, ModelAttributes } from './attribute';
-import { Model, ModelOptions, ModelProperties } from './model';
+import { AssociationType, AssociationTarget, AssociationOptions, ModelAssociations } from './association';
+import { AttributeType, AttributeOptions, ModelAttributes } from './attribute';
+import { Model, ModelOptions } from './model';
 import { Validation, ValidationFunction } from './validation';
 
 /** The meta key for a model's options on a model class. */
@@ -163,33 +163,7 @@ export function getAttributes(ctor: Function): ModelAttributes {
  * @returns The validations for the attribute.
  */
 export function getAttributeValidations(ctor: Function, key: string | symbol): Validation[] {
-  return [ ... Reflect.getMetadata(ATTR_VALIDATIONS_META_KEY, ctor.prototype, key) ];
-}
-
-/**
- * Get the model properties for a model constructor.
- *
- * @param ctor The model constructor.
- * @returns The model properties.
- */
-export function getProperties<T extends Model>(ctor: Function): ModelProperties<T> {
-  let props = {};
-  let attrs = getAttributes(ctor);
-  let assocs = getAssociations(ctor);
-
-  for (let key of Object.keys(attrs)) {
-    let options = attrs[key];
-
-    props[key] = new Attribute(options.type, key);
-  }
-
-  for (let key of Object.keys(assocs)) {
-    let options = assocs[key];
-
-    props[key] = new Association(options.type, key);
-  }
-
-  return props as ModelProperties<T>;
+  return Reflect.getMetadata(ATTR_VALIDATIONS_META_KEY, ctor.prototype, key) || [];
 }
 
 /**

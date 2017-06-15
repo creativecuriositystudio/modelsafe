@@ -2,8 +2,7 @@
 import * as _ from 'lodash';
 
 import { getAttributes, getAttributeValidations } from './metadata';
-import { Property } from './property';
-import { ModelErrors, ValidationError } from './validation';
+import { ModelErrors, ValidationError, PropertyValidationError } from './validation';
 
 /** Options for constructing a model instance. */
 export interface ModelConstructorOptions {
@@ -66,7 +65,7 @@ export abstract class Model {
 
   /**
    * De-serializes a JSON object into a model instance.
-   * This will pick the attributes and associations that have
+   * This will pick the properties that have
    * been decorated on the model and throw away everything else.
    *
    * On top of this the underlying types of the data will be checked
@@ -99,7 +98,7 @@ export abstract class Model {
   /**
    * Serializes a model instance into a JSON object.
    *
-   * This will the attributes and associations that have been decorated on the model and throw
+   * This will pick the properties that have been decorated on the model and throw
    * away everything else.
    *
    * @param instance The instance to serialize to JSON.
@@ -124,8 +123,8 @@ export abstract class Model {
 
   /**
    * Check that a model instance passes its validations.
-   * This will check that the instance's data has types that
-   * match the decorated attribute types and also run
+   * This will check that the instance's data has values that
+   * match the attribute type's expected formats and also run
    * any additional decorated attribute validations.
    *
    * This throws an error if there was a validation failure, otherwise
@@ -137,18 +136,23 @@ export abstract class Model {
   async validate(): Promise<void> {
     let attrs = getAttributes(this.constructor);
     let errors: ModelErrors<any> = {};
-    let hadError = false;
 
     // Validate all attributes
     for (let key of Object.keys(attrs)) {
       let attr = attrs[key];
-      let attrErrors = [];
-      let validations = getAttributeValidations(this.constructor, key);
       let value = this[key];
-      let templateDefault = '<%= error %>';
-      let templateArgs = {
-        path: key,
-        value
+      let attrErrors = [];
+
+      // The decorated validations, i.e. extra validations that have been provided
+      let validations = getAttributeValidations(this.constructor, key);
+
+      // Coerce non property validation errors into an unknown validation error
+      let coerceError = (err: Error): PropertyValidationError => {
+        if (err instanceof PropertyValidationError) {
+          return err;
+        }
+
+        return new PropertyValidationError('unknown', err.message);
       };
 
       if (_.isNil(value)) {
@@ -159,73 +163,54 @@ export abstract class Model {
         } else {
           // There's no value and the field is required. Show an error.
           // Validate that non-optional attributes exist on the instance.
-          attrErrors.push(_.template(attr.requiredMessage || templateDefault)({
-            ... templateArgs,
 
-            error: 'Value is required'
-          }));
+          attrErrors.push({
+            type: 'attribute.required',
+            message: 'Value is required'
+          });
         }
       }
 
-      // Validate the decorated attribute type if it has a validation function
+      // Run the attribute type validation if available
       if (typeof (attr.type.validate) === 'function') {
         try {
-          await attr.type.validate(this[key]);
+          await attr.type.validate(key, value);
         } catch (err) {
-          let template = templateDefault;
-          let validationOptions = attr.validationOptions;
+          err = coerceError(err);
 
-          if (validationOptions && validationOptions.message) {
-            template = validationOptions.message;
-          }
-
-          attrErrors.push(_.template(template)({
-            ... templateArgs,
-
-            error: err.message
-          }));
+          attrErrors.push({
+            type: err.type,
+            message: err.message
+          });
         }
       }
 
-      // We try the attribute validations separately,
-      // since we want to capture both attribute type validations and other validations
-      // at the same time. We also want all validations to trigger, so we try/catch
-      // inside the for loop.
+      // We try the decorated attribute validations separately, since we want to capture
+      // both attribute type validations and decorated validations at the same time.
+      // We also want all validations to trigger, so we try/catch inside the for loop.
       for (let validation of validations) {
-        let validationOptions = validation.options;
-
         try {
-          await validation.cb(value, validationOptions);
+          await validation.cb(key, value, validation.options);
         } catch (err) {
-          let template = templateDefault;
+          err = coerceError(err);
 
-          if (validationOptions && validationOptions.message) {
-            template = validationOptions.message;
-          }
-
-          attrErrors.push(_.template(template)({
-            ... templateArgs,
-
-            error: err.message
-          }));
+          attrErrors.push({
+            type: err.type,
+            message: err.message
+          });
         }
       }
 
-      // Flag we had at least one error so we can tell
-      // whether to throw an error.
-      if (attrErrors.length > 0) {
-        hadError = true;
+      if (attrErrors.length < 1) {
+        // Don't generate error messages if there was no errors.
+        continue;
       }
 
-      errors[key] = [
-        ... errors[key],
-
-        attrErrors
-      ];
+      errors[key] = (errors[key] || []).concat(attrErrors);
     }
 
     // Only throw if there was at least one error, otherwise validation was successful
-    if (hadError) {
+    if (Object.keys(errors).length > 0) {
       throw new ValidationError(this.constructor as ModelConstructor<any>, 'Validation error', errors);
     }
   }
@@ -233,15 +218,6 @@ export abstract class Model {
 
 /** A value that is both a model class value and something that can construct a model. */
 export type ModelConstructor<T extends Model> = typeof Model & { new(): T };
-
-/**
- * A mapped type that maps all of a model's
- * properties to the property class, which
- * can either be an association or attribute.
- */
-export type ModelProperties<T extends Model> = {
-  [P in keyof T]: Property<T[P]>;
-};
 
 /** The options that can be defined for a model. */
 export interface ModelOptions {

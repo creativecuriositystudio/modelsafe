@@ -1,8 +1,7 @@
 /** Contains the attribute types. */
 import * as _ from 'lodash';
 
-import { Property } from './property';
-import { ValidationFunction, ValidationOptions } from './validation';
+import { ValidationFunction, PropertyValidationError } from './validation';
 
 /**
  * The internal type of an attribute.
@@ -16,15 +15,11 @@ export enum InternalAttributeType {
   TEXT,
   INTEGER,
   BIGINT,
-  FLOAT,
   REAL,
-  DOUBLE,
-  DECIMAL,
   BOOLEAN,
   TIME,
   DATE,
-  JSON,
-  JSONB,
+  OBJECT,
   BLOB,
   ENUM,
   ARRAY
@@ -83,65 +78,124 @@ function buildAttributeType(type: InternalAttributeType,
   return attrType;
 }
 
-/** A string attribute type. */
-export const STRING = buildAttributeType(InternalAttributeType.STRING);
+/**
+ * A string attribute type.
+ *
+ * The type only validates that the value is a string.
+ * The property type should be declared as `string`.
+ */
+export const STRING = buildAttributeType(InternalAttributeType.STRING, async (_path: string, value: any) => {
+  if (!_.isString(value)) {
+    throw new PropertyValidationError('attribute.string', 'Not a string');
+  }
+});
 
-/** A character attribute type. */
-export const CHAR = buildAttributeType(InternalAttributeType.CHAR);
+/**
+ * A character attribute type.
+ *
+ * The type validates that there is only a single character in the string.
+ * The property type should be declared as `string`.
+ */
+export const CHAR = buildAttributeType(InternalAttributeType.CHAR, async (_path: string, value: any) => {
+  if (!_.isString(value) || value.length !== 1) {
+    throw new PropertyValidationError('attribute.char', 'Not a character');
+  }
+});
 
 /**
  * A text attribute type. In most ModelSafe integrations,
  * this will translate to larger storage than a string.
+ *
+ * The type only validates that the value is a string.
+ * The property type should be declared as `string`.
  */
-export const TEXT = buildAttributeType(InternalAttributeType.TEXT);
+export const TEXT = buildAttributeType(InternalAttributeType.TEXT, async (_path: string, value: any) => {
+  if (!_.isString(value)) {
+    throw new PropertyValidationError('attribute.text', 'Not a string');
+  }
+});
 
-/** An integer attribute type. */
-export const INTEGER = buildAttributeType(InternalAttributeType.INTEGER);
+/**
+ * An integer attribute type.
+ *
+ * The property type should be declared as `number`.
+ */
+export const INTEGER = buildAttributeType(InternalAttributeType.INTEGER, async (_path: string, value: any) => {
+  if (!_.isInteger(value)) {
+    throw new PropertyValidationError('attribute.integer', 'Not an integer number');
+  }
+});
 
 /**
  * A BigInt attribute type. In some integrations,
  * this is represented as a string property to prevent precision loss.
+ *
+ * The type is not validated.
+ * The property type should be declared as `string` or similar.
  */
 export const BIGINT = buildAttributeType(InternalAttributeType.BIGINT);
 
-/** A float attribute type. */
-export const FLOAT = buildAttributeType(InternalAttributeType.FLOAT);
-
-/** A real number attribute type. */
-export const REAL = buildAttributeType(InternalAttributeType.REAL);
-
-/** A double attribute type. */
-export const DOUBLE = buildAttributeType(InternalAttributeType.DOUBLE);
+/**
+ * A float attribute type.
+ *
+ * The type only validates that the value is a real number.
+ * The property type should be declared as `number`.
+ */
+export const REAL = buildAttributeType(InternalAttributeType.REAL, async (_path: string, value: any) => {
+  if (!_.isNumber(value)) {
+    throw new PropertyValidationError('attribute.real', 'Not a real number');
+  }
+});
 
 /**
- * A decimal attribute type, with a specific precision and scale.
+ * A boolean attribute type.
+ *
+ * The property type should be declared as `boolean`.
  */
-export const DECIMAL = buildAttributeType(InternalAttributeType.DECIMAL);
-
-/** A boolean attribute type. */
-export const BOOLEAN = buildAttributeType(InternalAttributeType.BOOLEAN);
-
-/** A timestamp attribute type. */
-export const TIME = buildAttributeType(InternalAttributeType.TIME);
-
-/** A date attribute type. */
-export const DATE = buildAttributeType(InternalAttributeType.DATE);
+export const BOOLEAN = buildAttributeType(InternalAttributeType.BOOLEAN, async (_path: string, value: any) => {
+  if (!_.isBoolean(value)) {
+    throw new PropertyValidationError('attribute.boolean', 'Not a boolean');
+  }
+});
 
 /**
- * A JSON attribute type.
- * Please note that ModelSafe doesn't actually handle JSON attributes differently,
- * it's up to the relevant integrations to provide JSON functionaltiy as expected.
+ * A timestamp (with or without a date portion) attribute type.
+ *
+ * The property type should be declared as `Date`.
  */
-export const JSON = buildAttributeType(InternalAttributeType.JSON);
+export const TIME = buildAttributeType(InternalAttributeType.TIME, async (_path: string, value: any) => {
+  if (!_.isDate(value)) {
+    throw new PropertyValidationError('attribute.time', 'Not a time');
+  }
+});
 
 /**
- * A JSONB attribute type. This is the same as JSON, but may contain
- * binary information.
+ * A date attribute type.
+ *
+ * The property type should be declared as `Date`.
  */
-export const JSONB = buildAttributeType(InternalAttributeType.JSONB);
+export const DATE = buildAttributeType(InternalAttributeType.DATE, async (_path: string, value: any) => {
+  if (!_.isDate(value)) {
+    throw new PropertyValidationError('attribute.date', 'Not a date');
+  }
+});
+
+/**
+ * A plain JavaScript object type.
+ *
+ * The property type should be declared as `object`.
+ */
+export const OBJECT = buildAttributeType(InternalAttributeType.OBJECT, async (_path: string, value: any) => {
+  if (!_.isPlainObject(value)) {
+    throw new PropertyValidationError('attribute.object', 'Not an object');
+  }
+});
 
 /**
  * A blob (binary) attribute type.
+ *
+ * This type is not validated.
+ * The property type should be declared as `ArrayBuffer` or similar.
  */
 export const BLOB = buildAttributeType(InternalAttributeType.BLOB);
 
@@ -153,9 +207,9 @@ export const BLOB = buildAttributeType(InternalAttributeType.BLOB);
  * @returns The ENUM attribute type.
  */
 export function ENUM(values: string[]): AttributeType {
-  return buildAttributeType(InternalAttributeType.ENUM, async (value: any) => {
-    if (value && values.indexOf(value) === -1) {
-      throw new Error('Not a known enumeration value');
+  return buildAttributeType(InternalAttributeType.ENUM, async (_path: string, value: any) => {
+    if (values.indexOf(value) === -1) {
+      throw new PropertyValidationError('attribute.enum', 'Not a known enumeration value');
     }
   }, { values });
 }
@@ -168,48 +222,11 @@ export function ENUM(values: string[]): AttributeType {
  * @returns The ARRAY attribute type.
  */
 export function ARRAY(contained: AttributeType): AttributeType {
-  return buildAttributeType(InternalAttributeType.ARRAY, async (value: any) => {
+  return buildAttributeType(InternalAttributeType.ARRAY, async (_path: string, value: any) => {
     if (!_.isArray(value)) {
-      throw new Error('Not an array');
+      throw new PropertyValidationError('attribute.array', 'Not an array');
     }
   }, { contained });
-}
-
-/**
- * An attribute of a model.
- * This simply boils down to a name of the attribute with
- * no other data.
- *
- * @param T The contained model attribute type.
- */
-export class Attribute<T> extends Property<T> {
-  /** The attribute type. */
-  private type: AttributeType;
-
-  /** The attribute name. */
-  private name: string;
-
-  /**
-   * Construct an attribute.
-   *
-   * @param type The attribute type.
-   * @param name The attribute name.
-   */
-  constructor(type: AttributeType, name: string) {
-    super();
-
-    this.type = type;
-    this.name = name;
-  }
-
-  /**
-   * Turns the attribute into its relevant property name.
-   *
-   * @returns The property name.
-   */
-  public toString(): string {
-    return this.name;
-  }
 }
 
 /** The options that can be defined for an attribute. */
@@ -238,22 +255,6 @@ export interface AttributeOptions {
    * when it is constructed for the first time.
    */
   defaultValue?: any;
-
-  /**
-   * The error message template for when a value is marked as required but does not exist.
-   * This is the same format as the `ValidationOptions` message.
-   *
-   * @see ValidationOptions
-   */
-  requiredMessage?: string;
-
-  /**
-   * The error message template for an attribute type's validation. This can be
-   * used to change the message for the type validation.
-   *
-   * @see ValidationOptions
-   */
-  validationOptions?: ValidationOptions;
 }
 
 /** The attributes defined on a model. */

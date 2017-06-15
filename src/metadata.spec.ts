@@ -5,8 +5,8 @@ import { STRING, INTEGER } from './attribute';
 import { BELONGS_TO, HAS_MANY } from './association';
 import { attr, assoc, model, primary, unique,
          required, optional, defaultValue,
-         guessModelName, hasModelOptions, getProperties, getAttributes } from './metadata';
-import { Model, ModelProperties } from './model';
+         guessModelName, hasModelOptions, getAttributes } from './metadata';
+import { Model } from './model';
 
 /* tslint:disable:class-name */
 class ANiceModelName {}
@@ -97,14 +97,5 @@ describe('hasModelOptions', () => {
 
   it('should return false if a class has been decorated', () => {
     chai.should().equal(hasModelOptions(NotDecorated), false);
-  });
-});
-
-describe('getProperties', () => {
-  it('should map properties correctly', () => {
-    let props: ModelProperties<User> = getProperties<User>(User);
-
-    chai.should().equal(props.name.toString(), 'name');
-    chai.should().equal(props.comments.toString(), 'comments');
   });
 });

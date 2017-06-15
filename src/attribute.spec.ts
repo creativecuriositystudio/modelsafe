@@ -2,9 +2,8 @@
 import * as chai from 'chai';
 
 import { InternalAttributeType, STRING, CHAR, TEXT,
-         INTEGER, BIGINT, FLOAT, REAL,
-         DOUBLE, DECIMAL, BOOLEAN, TIME,
-         DATE, JSON, JSONB, BLOB,
+         INTEGER, BIGINT, REAL, BOOLEAN, TIME,
+         DATE, OBJECT, BLOB,
          ENUM, ARRAY, ArrayAttributeTypeOptions,
          EnumAttributeTypeOptions } from './attribute';
 
@@ -32,15 +31,11 @@ describe('AttributeType', () => {
     TEXT: [InternalAttributeType.TEXT, TEXT],
     INTEGER: [InternalAttributeType.INTEGER, INTEGER],
     BIGINT: [InternalAttributeType.BIGINT, BIGINT],
-    FLOAT: [InternalAttributeType.FLOAT, FLOAT],
     REAL: [InternalAttributeType.REAL, REAL],
-    DOUBLE: [InternalAttributeType.DOUBLE, DOUBLE],
-    DECIMAL: [InternalAttributeType.DECIMAL, DECIMAL],
     BOOLEAN: [InternalAttributeType.BOOLEAN, BOOLEAN],
     TIME: [InternalAttributeType.TIME, TIME],
     DATE: [InternalAttributeType.DATE, DATE],
-    JSON: [InternalAttributeType.JSON, JSON],
-    JSONB: [InternalAttributeType.JSONB, JSONB],
+    OBJECT: [InternalAttributeType.OBJECT, OBJECT],
     BLOB: [InternalAttributeType.BLOB, BLOB]
   };
 

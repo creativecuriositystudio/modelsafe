@@ -1,6 +1,7 @@
 # 1.0.0-alpha.1
 
 * [CHANGE] Requires ES6 TypeScript
+* [CHANGE] Removed unused attribute types
 * [CHANGE] Removed `Model.associate` in favour of lazy-loaded association decoration
 * [FEATURE] A `defaultValue` option for attributes that will be automatically set on new
   model instances unless you provide the `defaults` option in constructing the model as `false`
@@ -13,6 +14,18 @@
   * `@readOnly` for decorating an attribute as read-only
   * `@primary` for decorating an attribute as a primary key
   * `@unique` for decorating an attribute as unique
+* [FEATURE] Added `validate` to model instances for performing validations
+  of model instance data. This will run a few types of validations:
+  * Validates that the each property on the model data matches a type expected for the decorated attribute type
+  * Validates with any extra validations decorated through the `@validate` decorator
+  * Validates that attributes that have `optional` set to `false` have values provided
+* Introduced a series of built-in decoratable validations, specifically:
+  * IS_EMAIL, which is aliased under the `@email` decorator
+  *
+  *
+* [FEATURE] Add serialization and de-serialization from JSON. De-serialization performs
+  validations by default but this can be disabled through an option.
+  This can be used for sending or receiving the data of ModelSafe model instances.
 
 # 0.7.1
 

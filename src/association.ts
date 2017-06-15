@@ -1,7 +1,6 @@
 /** Contains the association types. */
 import { hasModelOptions } from './metadata';
 import { Model, ModelConstructor } from './model';
-import { Property } from './property';
 
 /** A type of association between models. */
 export enum AssociationType {
@@ -16,40 +15,6 @@ export const HAS_ONE = AssociationType.HAS_ONE;
 export const HAS_MANY = AssociationType.HAS_MANY;
 export const BELONGS_TO = AssociationType.BELONGS_TO;
 export const BELONGS_TO_MANY = AssociationType.BELONGS_TO_MANY;
-
-/**
- * An association of a model.
- * This is acts no differently than an attribute for now.
- */
-export class Association<T> extends Property<T> {
-  /** The association type. */
-  private type: AssociationType;
-
-  /** The association name. */
-  private name: string;
-
-  /**
-   * Construct an association.
-   *
-   * @param type The association type.
-   * @param name The association name.
-   */
-  constructor(type: AssociationType, name: string) {
-    super();
-
-    this.type = type;
-    this.name = name;
-  }
-
-  /**
-   * Turns the association into its relevant property name.
-   *
-   * @returns The property name.
-   */
-  public toString(): string {
-    return this.name;
-  }
-}
 
 /** The options that can be defined for an association. */
 export interface AssociationOptions {
