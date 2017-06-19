@@ -1,7 +1,8 @@
 /** Contains the model classes and decorators. */
 import * as _ from 'lodash';
 
-import { getAttributes, getAttributeValidations } from './metadata';
+import { isLazyLoad, HAS_MANY, BELONGS_TO_MANY } from './association';
+import { getAttributes, getAttributeValidations, getAssociations } from './metadata';
 import { ModelErrors, ValidationError, PropertyValidationError } from './validation';
 
 /** Options for constructing a model instance. */
@@ -93,11 +94,52 @@ export abstract class Model {
     // class instance to be supported.
     if (!_.isPlainObject(data)) {
       data = _.toPlainObject(data);
+    } else {
+      data = _.clone(data);
     }
 
     // Don't merge default values on during construction because we want the data 'as-is'
-    let instance = new (this as ModelConstructor<T>)(data, { defaults: false }) as T;
+    let attrs = getAttributes(this);
+    let assocs = getAssociations(this);
+    let instance = new (this as ModelConstructor<T>)(_.pick(data, Object.keys(attrs)), { defaults: false }) as T;
 
+    // Call deserialization methods for associations to populate deserialized association data
+    for (let key of Object.keys(assocs)) {
+      let assoc = assocs[key];
+      let value = data[key];
+      let target = assoc.target;
+
+      // Don't attempt to deserialize association values that are nil.
+      if (_.isNil(value)) {
+        continue;
+      }
+
+      if (isLazyLoad(target)) {
+        target = (target as () => ModelConstructor<any>)();
+      }
+
+      // We can't deserialize undefined model constructors
+      if (!target) {
+        throw new Error(`Cannot deserialize because association ${key} is not defined`);
+      }
+
+      // If it's an array like relationship and the value is an array, deserialize each element
+      if (assoc.type === HAS_MANY || assoc.type === BELONGS_TO_MANY) {
+        // Only deserialize these types if the value is array-like.
+        // Fallback to an empty array if the value is invalid.
+        if (!_.isArray(value)) {
+          instance[key] = [];
+
+          continue;
+        }
+
+        instance[key] = await Promise.all(_.map(value, async (item) => (target as ModelConstructor<any>).deserialize(item)));
+      } else {
+        instance[key] = await (target as ModelConstructor<any>).deserialize(value);
+      }
+    }
+
+    // Throw validation errors if required in order to ensure valid instances only
     if (options.validate) {
       await instance.validate();
     }
@@ -116,13 +158,56 @@ export abstract class Model {
    * @returns        A promise that resolves with a serialized model, otherwise rejecting with an error.
    */
   static async serialize<T extends Model>(instance: T, _options?: SerializeOptions): Promise<object> {
-    return _.toPlainObject(instance);
+    let attrs = getAttributes(this);
+    let assocs = getAssociations(this);
+    let result = _.pick(_.toPlainObject(instance), Object.keys(attrs));
+
+    // Call serialization methods for associations to populate serialized association data
+    for (let key of Object.keys(assocs)) {
+      let assoc = assocs[key];
+      let value = instance[key];
+      let target = assoc.target;
+
+      // Don't attempt to serialize association values that are nil.
+      if (_.isNil(value)) {
+        continue;
+      }
+
+      if (isLazyLoad(target)) {
+        target = (target as () => ModelConstructor<any>)();
+      }
+
+      // We can't serialize undefined model constructors
+      if (!target) {
+        throw new Error(`Cannot serialize because association ${key} is not defined`);
+      }
+
+      // If it's an array like relationship and the value is an array, serialize each element.
+      if (assoc.type === HAS_MANY || assoc.type === BELONGS_TO_MANY) {
+        // Only deserialize these types if the value is array-like.
+        // Fallback to an empty array if the value is invalid.
+        if (!_.isArray(value)) {
+          result[key] = [];
+
+          continue;
+        }
+
+        // FIXME: Any cast required because we don't know the target model type in this instance
+        result[key] = await Promise.all(_.map(value, async (item) => (target as ModelConstructor<any>).serialize(item as any)));
+      } else {
+        result[key] = await (target as ModelConstructor<any>).serialize(value);
+      }
+    }
+
+    return result;
   }
 
   /**
    * Serialize a model instance into a JSON object.
    *
+   * This method should not be overridden - the static serialize function should be changed.
    * See the static serialize method for more information.
+   *
    *
    * @param options Any extra options to use for serialization.
    * @returns       A promise that resolves with a serialized model, otherwise rejecting with an error.

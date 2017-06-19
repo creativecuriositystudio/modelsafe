@@ -1,8 +1,8 @@
 /* tslint:disable:completed-docs */
 import * as chai from 'chai';
 
-import { STRING } from './attribute';
-import { BELONGS_TO, HAS_MANY } from './association';
+import { STRING, INTEGER } from './attribute';
+import { BELONGS_TO, HAS_MANY, HAS_ONE } from './association';
 import { model, attr, defaultValue, assoc, getModelOptions } from './metadata';
 import { Model } from './model';
 
@@ -15,7 +15,10 @@ class ManualModel extends Model {
 
 @model()
 class AutomaticModel extends Model {
-  @assoc(BELONGS_TO)
+  @attr(STRING)
+  blah: string;
+
+  @assoc(BELONGS_TO, () => SerialModel)
   test1: object;
 
   @assoc(HAS_MANY)
@@ -24,8 +27,26 @@ class AutomaticModel extends Model {
 
 @model()
 class SerialModel extends Model {
-  @attr(DATE)
-  someDate: Date;
+  @attr(STRING)
+  name: string;
+
+  @attr(INTEGER)
+  count: number;
+
+  @assoc(HAS_MANY, () => AutomaticModel)
+  tests: AutomaticModel[];
+
+  @assoc(BELONGS_TO, () => Serial2Model)
+  child: Serial2Model;
+}
+
+@model()
+class Serial2Model extends Model {
+  @attr(STRING)
+  hello: string;
+
+  @assoc(HAS_ONE, () => SerialModel)
+  parent: SerialModel;
 }
 
 describe('@model', () => {
@@ -50,6 +71,94 @@ describe('Model', () => {
 
     it('should construct with user-provided values set', () => {
       new ManualModel({ name: 'A different name' }).name.should.equal('A different name');
+    });
+  });
+
+  describe('#serialize', () => {
+    it('should serialize plain models to JSON correctly', async () => {
+      let instance = new SerialModel({
+        name: 'Jim Bob',
+        count: 2345
+      });
+
+      chai.assert.deepEqual(await SerialModel.serialize(instance), {
+        name: 'Jim Bob',
+        count: 2345
+      });
+    });
+
+    it('should serialize models with single valued associations to JSON correctly', async () => {
+      let instance = new SerialModel({
+        name: 'Jim Bob',
+        count: 2345,
+        child: new Serial2Model({ hello: 'world' })
+      });
+
+      chai.assert.deepEqual(await SerialModel.serialize(instance), {
+        name: 'Jim Bob',
+        count: 2345,
+        child: { hello: 'world' }
+      });
+    });
+
+    it('should serialize models with array valued associations to JSON correctly', async () => {
+      let instance = new SerialModel({
+        name: 'Jim Bob',
+        count: 2345,
+        tests: [
+          new AutomaticModel({ blah: 'dah' })
+        ]
+      });
+
+      chai.assert.deepEqual(await SerialModel.serialize(instance), {
+        name: 'Jim Bob',
+        count: 2345,
+        tests: [{ blah: 'dah' }]
+      });
+    });
+  });
+
+  describe('#deserialize', () => {
+    it('should deserialize plain models to JSON correctly', async () => {
+      let data = {
+        name: 'Jim Bob',
+        count: 2345
+      };
+
+      chai.assert.deepEqual(await SerialModel.deserialize(data), new SerialModel({
+        name: 'Jim Bob',
+        count: 2345
+      }));
+    });
+
+    it('should deserialize models with single valued associations to JSON correctly', async () => {
+      let data = {
+        name: 'Jim Bob',
+        count: 2345,
+        child: { hello: 'world' }
+      };
+
+      chai.assert.deepEqual(await SerialModel.deserialize(data), new SerialModel({
+        name: 'Jim Bob',
+        count: 2345,
+        child: new Serial2Model({ hello: 'world' })
+      }));
+    });
+
+    it('should deserialize models with array valued associations to JSON correctly', async () => {
+      let data = {
+        name: 'Jim Bob',
+        count: 2345,
+        tests: [
+          { blah: 'dah' }
+        ]
+      };
+
+      chai.assert.deepEqual(await SerialModel.deserialize(data), new SerialModel({
+        name: 'Jim Bob',
+        count: 2345,
+        tests: [new AutomaticModel({ blah: 'dah' })]
+      }));
     });
   });
 });
