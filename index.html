@@ -1,0 +1,369 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>modelsafe</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">modelsafe</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> modelsafe</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="modelsafe">ModelSafe</h1>
+				<h2 id="introduction">Introduction</h2>
+				<p>ModelSafe is a type-safe data modelling library for TypeScript 2.1+ that is used to describe model schemas
+					using classes and decorators. These models are independent of any library
+					that actually queries them (whether from a REST API or a database), allowing
+				you to define the models in your application agnostically of the backend/frontend.</p>
+				<p>Attributes and associations are defined on model classes using decorators to
+					describe the schema of a model. ModelSafe also provides support
+					for defining the validation rules on model attributes using decorators and then
+				validating the model data with these rules.</p>
+				<p>On its own, ModelSafe is not necessarily useful. It should be used with things
+					like Squell, which integrates ModelSafe data models with the Sequelize ORM.
+				The ModelSafe API is simple so building libraries that use its data models is easy.</p>
+				<h2 id="installation">Installation</h2>
+				<pre><code class="lang-sh">npm install --save modelsafe
+</code></pre>
+				<h2 id="usage">Usage</h2>
+				<h3 id="defining-models">Defining Models</h3>
+				<p>Models are just classes with their properties decorated with the metadata
+					required to describe how the model should be represented.
+					Models have two types of properties: <em>attributes</em>, which are properties
+					that have a type and represent the values of a model, and <em>associations</em> which are properties
+				that describe an association (also known as a relationship) to another model.</p>
+				<h4 id="defining-attributes">Defining Attributes</h4>
+				<p>A model attribute is a piece information on the model. This might be a person&#39;s name,
+					date of birth and so on. Properties on model classes that are attributes are
+				decorated with the <code>attr</code> decorator. Attributes can be of the following types:</p>
+				<ul>
+					<li>STRING, a short string</li>
+					<li>CHAR, a single UTF8 character</li>
+					<li>TEXT, a large string</li>
+					<li>INTEGER, an integer-only number</li>
+					<li>BIGINT, a string form of integer used for precision lossless numbers</li>
+					<li>REAL, a real number (equivalent to any JavaScript number)</li>
+					<li>BOOLEAN, a true/false (boolean) value</li>
+					<li>TIME, a time (equivalent to the JavaScript <code>Date</code> object)</li>
+					<li>DATE, a date and time (equivalent to the JavaScript <code>Date</code> object)</li>
+					<li>OBJECT, a plain JS object</li>
+					<li>BLOB, a blob of binary data (an <code>ArrayBuffer</code>)</li>
+					<li>ENUM, an enumerable value that can be one of many string values</li>
+					<li>ARRAY, an array of contained types</li>
+				</ul>
+				<p>Definition of attributes looks like the following:</p>
+				<pre><code class="lang-typescript"><span class="hljs-meta">@model</span>()
+<span class="hljs-keyword">class</span> User <span class="hljs-keyword">extends</span> modelsafe.Model {
+  <span class="hljs-meta">@attr</span>(modelsafe.STRING)
+  email: <span class="hljs-built_in">string</span>;
+
+  <span class="hljs-meta">@attr</span>(modelsafe.TEXT)
+  bio: <span class="hljs-built_in">string</span>;
+
+  <span class="hljs-meta">@attr</span>(modelsafe.INTEGER)
+  numLogins: <span class="hljs-built_in">number</span>;
+}
+</code></pre>
+				<p>An attribute type is separate from how its property&#39;s type is declared in the TypeScript code. This is because
+					TypeScript is based off of JavaScript and is hence quite lax on what types exist
+					in the type system. There is no <code>float</code> or <code>int</code> in TypeScript, only <code>number</code>. The
+					ModelSafe attribute types are separated out to allow for closer definitions like enforcing
+					a number be a real or integer. The type declaration for the property
+					that the attribute is attached to is simply how the model will be serialized and hence
+				isn&#39;t constrained to be a more specific type.</p>
+				<p>In other words, if it&#39;s a real number, it&#39;s declared as just any old number in the property type
+				and ModelSafe does the actual work off confirming its type matches that of a real number internally.</p>
+				<p>By default attributes defined on models are required. To make them optional,use the <code>@optional</code> decorator:</p>
+				<pre><code class="lang-typescript"><span class="hljs-meta">@attr</span>(modelsafe.STRING)
+<span class="hljs-meta">@optional</span>
+username?: <span class="hljs-built_in">string</span>;
+</code></pre>
+				<p>There are a number of additional options and decorators available, such as:</p>
+				<ul>
+					<li><code>@primary</code> for marking a model as primary key</li>
+					<li><code>@unique</code> for marking an attribute as unique (not validated, for use as metadata by other libraries)</li>
+					<li><code>@defaultValue</code> for giving an attribute a default value</li>
+				</ul>
+				<p>Check out the API documentation for more information.</p>
+				<h4 id="defining-associations">Defining Associations</h4>
+				<p>A model association is a field representing a relationship between a model and another model.
+					If a model can be associated to multiple of another model, this property will usually be declared
+					as an array of the other model, otherwise it will usually be declared as a single value of the other model.
+				ModelSafe supports the following associations (which are generally the standard):</p>
+				<ul>
+					<li>Belongs-to (1:1)</li>
+					<li>Has-one (1:1)</li>
+					<li>Has-many (1:m)</li>
+					<li>Belongs-to-many (n:m)</li>
+				</ul>
+				<p>Definition of the four different associations looks like the following:</p>
+				<pre><code class="lang-typescript"><span class="hljs-meta">@model</span>()
+<span class="hljs-keyword">class</span> ChatRoom <span class="hljs-keyword">extends</span> modelsafe.Model {
+  <span class="hljs-comment">// Other properties first..</span>
+
+  <span class="hljs-meta">@assoc</span>(modelsafe.HAS_ONE, User)
+  user: User;
+}
+
+<span class="hljs-meta">@model</span>()
+<span class="hljs-keyword">class</span> AvailabilityStatus extneds modelsafe.Model {
+  <span class="hljs-comment">// Other properties first..</span>
+
+  <span class="hljs-meta">@assoc</span>(modelsafe.BELONGS_TO, User)
+  user: User;
+}
+
+<span class="hljs-meta">@model</span>()
+<span class="hljs-keyword">class</span> ChatMessage extneds modelsafe.Model {
+  <span class="hljs-comment">// Other properties first..</span>
+
+  <span class="hljs-meta">@assoc</span>(modelsafe.BELONGS_TO_MANY, User)
+  users: User[];
+}
+
+<span class="hljs-meta">@model</span>()
+<span class="hljs-keyword">class</span> User <span class="hljs-keyword">extends</span> modelsafe.Model {
+  <span class="hljs-comment">// Other properties first..</span>
+
+  <span class="hljs-meta">@assoc</span>(modelsafe.BELONGS_TO, ChatRoom)
+  room: ChatRoom;
+
+  <span class="hljs-meta">@assoc</span>(modelsafe.HAS_ONE, AvailabilityStatus)
+  status: AvailabilityStatus;
+
+  <span class="hljs-meta">@assoc</span>(modelsafe.BELONGS_TO_MANY, ChatMessage)
+  messages: ChatMessage[];
+}
+</code></pre>
+				<p>There are a number of additional options that can be provided to the <code>@assoc</code>
+				decorator. Check out the API documentation for more information.</p>
+				<h4 id="defining-validations">Defining Validations</h4>
+				<p>ModelSafe supports decorating attributes with validations to be run. To see
+				how to actually run validations on model data, see the next section.</p>
+				<p>ModelSafe provides the following decorators for marking an attribute
+				with a validation:</p>
+				<ul>
+					<li><code>@email</code>, for checking if a value is a valid email address</li>
+					<li><code>@url</code>, for checking if a value is a valid URL</li>
+					<li><code>@uuid</code>, for checking if a value is a valid v3, v4 or v5 UUID</li>
+					<li><code>@json</code>, for checking if a value is valid JSON</li>
+					<li><code>@hex</code>, for checking if a value is a hexadecimal string</li>
+					<li><code>@alpha</code>, for checking if a value is alphabetical only</li>
+					<li><code>@alphanumeric</code>, for checking if a value is alphanumeric characters only</li>
+					<li><code>@base64</code>, for checking if a value is valid base64</li>
+					<li><code>@uppercase</code>, for checking if a value is all upper-case</li>
+					<li><code>@lowercase</code>, for checking if a value is all lower-case</li>
+					<li><code>@ip</code>, for checking if a value is an IP address</li>
+					<li><code>@matches</code>, for checking if a value matches a regular expression</li>
+					<li><code>@gt</code>, for checking if a value is greater than another value</li>
+					<li><code>@gte</code>, for checking if a value is greater than or equal to another value</li>
+					<li><code>@lt</code>, for checking if a value is less than another value</li>
+					<li><code>@lte</code>, for checking if a value is less than or equal to another value</li>
+					<li><code>@length</code>, for checking if an array or string is of an exact length</li>
+					<li><code>@minLength</code>, for checking if an array or string is of a minimum length</li>
+					<li><code>@maxLength</code>, for checking if an array or string is of a max length</li>
+				</ul>
+				<p>There is also a <code>@validate</code> decorator. This allows you to provide your own custom
+				validation functions (which are promise based, so they can be asynchronous).</p>
+				<h3 id="validating">Validating</h3>
+				<p>ModelSafe supports running an asynchronous validate of a model instance using
+					each model&#39;s <code>validate</code> method. This will validate a model and resolve
+				successfully if the model is valid, otherwise rejected with a <code>ValidationError</code>.</p>
+				<h3 id="serialization">Serialization</h3>
+				<p>A way to serialize and deserialize models from JSON is provided. This is pretty
+					powerful because ModelSafe knows the exact attribute values that should appear
+					on the model and can clean away unused ones, and associations will have
+					their serialization/deserialization functions recursively called (e.g.
+					if a user has a belongs to project, then it will serialize that project&#39;s
+				value using the project&#39;s association function).</p>
+				<p>To serialize a model instance to JSON, call the <code>serialize</code> method on the instance or model class,
+					e.g. <code>User.serialize(instance)</code>. This will resolve with a promise that serializes
+				to a plain JS object if successful, otherwise rejected.</p>
+				<p>To deserialzie a model instance from JSON, call the <code>deserialize</code> method on the model class,
+					e.g. <code>User.deserialize(data)</code>. This will resolve with a promise that deserializes to a model instance
+					if successful, otherwise rejected. This will run validations by default to ensure data integrity -
+				to disable that behaviour, just turn the <code>validate</code> option off when calling deserialize.</p>
+				<h2 id="documentatation">Documentatation</h2>
+				<p>The API documentation generated using <a href="https://github.com/TypeStrong/typedoc">TypeDoc</a>
+				is <a href="http://creativecuriositystudio.github.io/modelsafe">available online</a>.</p>
+				<p>To generate API documentation from the code into the <code>docs</code> directory, run:</p>
+				<pre><code class="lang-sh">npm run docs
+</code></pre>
+				<h2 id="testing">Testing</h2>
+				<p>To execute the test suite run:</p>
+				<pre><code class="lang-sh">npm run <span class="hljs-built_in">test</span>
+</code></pre>
+				<h2 id="license">License</h2>
+				<p>This project is licensed under the MIT license. Please see <code>LICENSE.md</code> for more details.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_association_.html">"association"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_association_spec_.html">"association.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_attribute_.html">"attribute"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_attribute_spec_.html">"attribute.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_index_.html">"index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_metadata_.html">"metadata"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_metadata_spec_.html">"metadata.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_model_.html">"model"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_model_spec_.html">"model.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_validation_.html">"validation"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_validation_spec_.html">"validation.spec"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
