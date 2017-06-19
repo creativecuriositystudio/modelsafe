@@ -34,13 +34,14 @@
     "@types/mocha": "^2.2.33",
     "chai": "^3.5.0",
     "chai-as-promised": "^7.0.0",
+    "gh-pages": "^1.0.0",
     "husky": "^0.13.2",
     "jsverify": "^0.8.2",
     "mocha": "^3.2.0",
     "ts-node": "^2.1.0",
     "tslint": "^5.0.0",
     "tslint-config-ccs": "^0.5.1",
-    "typedoc": "^0.5.1"
+    "typedoc": "^0.5.10"
   },
   "dependencies": {
     "@types/lodash": "^4.14.53",
