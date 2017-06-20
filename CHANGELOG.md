@@ -1,3 +1,9 @@
+# 1.0.0-alpha.3
+
+* [FIX] Serialize/deserialize now no longer infinitely recursively serialize association values by default
+* [FEATURE] Serialization/deserialization of associations can now be turned off, and you can provide a depth
+  for serializing associations (defaults to 1 level)
+
 # 1.0.0-alpha.2
 
 * [FEATURE] Added `required` option with `ValidationOptions` to support skipping required attribute
