@@ -1,3 +1,8 @@
+# 1.0.0-alpha.2
+
+* [FEATURE] Added `required` option with `ValidationOptions` to support skipping required attribute
+  checks during validation
+
 # 1.0.0-alpha.1
 
 * [CHANGE] Uses the ES6 environment with `tsconfig.json`

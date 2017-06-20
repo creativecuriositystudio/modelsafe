@@ -24,6 +24,15 @@ export interface DeserializeOptions {
   validate: boolean;
 }
 
+/** Options for validating a model instance. */
+export interface ValidationOptions {
+  /**
+   * Whether to run validations that check whether required attributes are set.
+   * This can be turned off to support partial validations.
+   */
+  required: boolean;
+}
+
 /**
  * The abstract model class.
  * This should be extended by all database models.
@@ -225,10 +234,17 @@ export abstract class Model {
    * This throws an error if there was a validation failure, otherwise
    * resolving with nothing in the case of success.
    *
+   * @param options Any extra validation options to validate with.
    * @returns A promise that resolves successfully or
    *          rejects with a `ValidationError` if there was a validation error
    */
-  async validate(): Promise<void> {
+  async validate(options?: ValidationOptions): Promise<void> {
+    options = {
+      required: true,
+
+      ... options
+    };
+
     let attrs = getAttributes(this.constructor);
     let errors: ModelErrors<any> = {};
 
@@ -255,7 +271,7 @@ export abstract class Model {
           // There's no value and the field is optional.
           // Don't perform any validations on this attribute.
           continue;
-        } else {
+        } else if (options.required) {
           // There's no value and the field is required. Show an error.
           // Validate that non-optional attributes exist on the instance.
 
