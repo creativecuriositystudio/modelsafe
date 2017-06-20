@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AttributeOptions | modelsafe</title>
+	<title>ValidationOptions | modelsafe</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_attribute_.html">&quot;attribute&quot;</a>
+					<a href="../modules/_model_.html">&quot;model&quot;</a>
 				</li>
 				<li>
-					<a href="_attribute_.attributeoptions.html">AttributeOptions</a>
+					<a href="_model_.validationoptions.html">ValidationOptions</a>
 				</li>
 			</ul>
-			<h1>Interface AttributeOptions</h1>
+			<h1>Interface ValidationOptions</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The options that can be defined for an attribute.</p>
+						<p>Options for validating a model instance.</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">AttributeOptions</span>
+						<span class="target">ValidationOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -91,12 +91,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_attribute_.attributeoptions.html#defaultvalue" class="tsd-kind-icon">default<wbr>Value</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_attribute_.attributeoptions.html#optional" class="tsd-kind-icon">optional</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_attribute_.attributeoptions.html#primary" class="tsd-kind-icon">primary</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_attribute_.attributeoptions.html#readonly" class="tsd-kind-icon">read<wbr>Only</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_attribute_.attributeoptions.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_attribute_.attributeoptions.html#unique" class="tsd-kind-icon">unique</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_.validationoptions.html#required" class="tsd-kind-icon">required</a></li>
 							</ul>
 						</section>
 					</div>
@@ -105,95 +100,18 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="defaultvalue" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> default<wbr>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">default<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<a name="required" class="tsd-anchor"></a>
+					<h3>required</h3>
+					<div class="tsd-signature tsd-kind-icon">required<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/attribute.ts#L257">attribute.ts:257</a></li>
+							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.ts#L33">model.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The default value for the attribute.
-								This will be automatically set on a model
-							when it is constructed for the first time.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="optional" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> optional</h3>
-					<div class="tsd-signature tsd-kind-icon">optional<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/attribute.ts#L241">attribute.ts:241</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether the attribute should be optional.
-							Attributes are required by default.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="primary" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> primary</h3>
-					<div class="tsd-signature tsd-kind-icon">primary<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/attribute.ts#L244">attribute.ts:244</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether the attribute is a primary key.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="readonly" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> read<wbr>Only</h3>
-					<div class="tsd-signature tsd-kind-icon">read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/attribute.ts#L250">attribute.ts:250</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether the attribute is read-only.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="_attribute_.attributetype.html" class="tsd-signature-type">AttributeType</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/attribute.ts#L235">attribute.ts:235</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The type of the attribute.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="unique" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> unique</h3>
-					<div class="tsd-signature tsd-kind-icon">unique<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/attribute.ts#L247">attribute.ts:247</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether the attribute is unique.</p>
+							<p>Whether to run validations that check whether required attributes are set.
+							This can be turned off to support partial validations.</p>
 						</div>
 					</div>
 				</section>
@@ -211,7 +129,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_association_spec_.html">"association.spec"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_attribute_.html">"attribute"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -226,7 +144,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_metadata_spec_.html">"metadata.spec"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_model_.html">"model"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -242,92 +160,35 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/_attribute_.internalattributetype.html" class="tsd-kind-icon">Internal<wbr>Attribute<wbr>Type</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_model_.model.html" class="tsd-kind-icon">Model</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_attribute_.arrayattributetypeoptions.html" class="tsd-kind-icon">Array<wbr>Attribute<wbr>Type<wbr>Options</a>
+						<a href="_model_.deserializeoptions.html" class="tsd-kind-icon">Deserialize<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_.modelconstructoroptions.html" class="tsd-kind-icon">Model<wbr>Constructor<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_.modeloptions.html" class="tsd-kind-icon">Model<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_.serializeoptions.html" class="tsd-kind-icon">Serialize<wbr>Options</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_attribute_.attributeoptions.html" class="tsd-kind-icon">Attribute<wbr>Options</a>
+						<a href="_model_.validationoptions.html" class="tsd-kind-icon">Validation<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_attribute_.attributeoptions.html#defaultvalue" class="tsd-kind-icon">default<wbr>Value</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_attribute_.attributeoptions.html#optional" class="tsd-kind-icon">optional</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_attribute_.attributeoptions.html#primary" class="tsd-kind-icon">primary</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_attribute_.attributeoptions.html#readonly" class="tsd-kind-icon">read<wbr>Only</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_attribute_.attributeoptions.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_attribute_.attributeoptions.html#unique" class="tsd-kind-icon">unique</a>
+								<a href="_model_.validationoptions.html#required" class="tsd-kind-icon">required</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_attribute_.attributetype.html" class="tsd-kind-icon">Attribute<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_attribute_.enumattributetypeoptions.html" class="tsd-kind-icon">Enum<wbr>Attribute<wbr>Type<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_attribute_.modelattributes.html" class="tsd-kind-icon">Model<wbr>Attributes</a>
-					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#attributetypeoptions" class="tsd-kind-icon">Attribute<wbr>Type<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#bigint" class="tsd-kind-icon">BIGINT</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#blob" class="tsd-kind-icon">BLOB</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#boolean" class="tsd-kind-icon">BOOLEAN</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#char" class="tsd-kind-icon">CHAR</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#date" class="tsd-kind-icon">DATE</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#integer" class="tsd-kind-icon">INTEGER</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#object" class="tsd-kind-icon">OBJECT</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#real" class="tsd-kind-icon">REAL</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#string" class="tsd-kind-icon">STRING</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#text" class="tsd-kind-icon">TEXT</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#time" class="tsd-kind-icon">TIME</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#array" class="tsd-kind-icon">ARRAY</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_attribute_.html#enum" class="tsd-kind-icon">ENUM</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_attribute_.html#buildattributetype" class="tsd-kind-icon">build<wbr>Attribute<wbr>Type</a>
+						<a href="../modules/_model_.html#modelconstructor" class="tsd-kind-icon">Model<wbr>Constructor</a>
 					</li>
 				</ul>
 			</nav>

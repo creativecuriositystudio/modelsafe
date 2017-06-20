@@ -124,7 +124,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_model_.model.html">Model</a>.<a href="_model_.model.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.ts#L34">model.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.ts#L43">model.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -166,7 +166,7 @@
 					<div class="tsd-signature tsd-kind-icon">hello<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.spec.ts#L46">model.spec.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.spec.ts#L46">model.spec.ts:46</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -176,7 +176,7 @@
 					<div class="tsd-signature tsd-kind-icon">parent<span class="tsd-signature-symbol">:</span> <a href="_model_spec_.serialmodel.html" class="tsd-signature-type">SerialModel</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.spec.ts#L49">model.spec.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.spec.ts#L49">model.spec.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,7 +194,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_model_.model.html">Model</a>.<a href="_model_.model.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.ts#L215">model.ts:215</a></li>
+									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.ts#L224">model.ts:224</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -222,14 +222,14 @@
 					<a name="validate" class="tsd-anchor"></a>
 					<h3>validate</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">validate<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">validate<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_model_.validationoptions.html" class="tsd-signature-type">ValidationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_model_.model.html">Model</a>.<a href="_model_.model.html#validate">validate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.ts#L231">model.ts:231</a></li>
+									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.ts#L241">model.ts:241</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -242,6 +242,15 @@
 								<p>This throws an error if there was a validation failure, otherwise
 								resolving with nothing in the case of success.</p>
 							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/_model_.validationoptions.html" class="tsd-signature-type">ValidationOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Any extra validation options to validate with.</p>
+									</div>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>A promise that resolves successfully or
 							rejects with a <code>ValidationError</code> if there was a validation error</p>
@@ -259,7 +268,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_model_.model.html">Model</a>.<a href="_model_.model.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.ts#L84">model.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.ts#L93">model.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -312,7 +321,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_model_.model.html">Model</a>.<a href="_model_.model.html#serialize-1">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/969746d/src/model.ts#L160">model.ts:160</a></li>
+									<li>Defined in <a href="https://github.com/z0w0/modelsafe/blob/db40d21/src/model.ts#L169">model.ts:169</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
