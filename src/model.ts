@@ -18,22 +18,22 @@ export interface ModelConstructorOptions {
 // tslint:disable-next-line:no-empty-interface
 export interface SerializeOptions {
   /** Whether to serialize associations recursively. */
-  associations: boolean;
+  associations?: boolean;
 
   /** The depth of associations to recursively serialize. */
-  depth: number;
+  depth?: number;
 }
 
 /** Options for deserializing a JSON object to a model instance. */
 export interface DeserializeOptions {
   /** Whether to serialize associations recursively. */
-  associations: boolean;
+  associations?: boolean;
 
   /** The depth of associations to recursively serialize. */
-  depth: number;
+  depth?: number;
 
   /** Whether to run validations to ensure the JSON data is valid. */
-  validate: boolean;
+  validate?: boolean;
 }
 
 /** Options for validating a model instance. */
@@ -42,7 +42,7 @@ export interface ValidationOptions {
    * Whether to run validations that check whether required attributes are set.
    * This can be turned off to support partial validations.
    */
-  required: boolean;
+  required?: boolean;
 }
 
 /**

@@ -1,3 +1,7 @@
+# 1.0.0-alpha.4
+
+* [FIX] Make `associations` serialization options optional
+
 # 1.0.0-alpha.3
 
 * [FIX] Serialize/deserialize now no longer infinitely recursively serialize association values by default
