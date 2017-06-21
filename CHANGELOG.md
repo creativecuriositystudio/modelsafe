@@ -1,3 +1,7 @@
+# 1.0.0-alpha.5
+
+* [FIX] If `required` is set to `false` when validating, then attribute type validations will be properly skipped
+
 # 1.0.0-alpha.4
 
 * [FIX] Make `associations` serialization options optional

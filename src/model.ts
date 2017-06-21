@@ -315,11 +315,11 @@ export abstract class Model {
       };
 
       if (_.isNil(value)) {
-        if (attr.optional) {
+        if (attr.optional || !options.required) {
           // There's no value and the field is optional.
           // Don't perform any validations on this attribute.
           continue;
-        } else if (options.required) {
+        } else {
           // There's no value and the field is required. Show an error.
           // Validate that non-optional attributes exist on the instance.
 
