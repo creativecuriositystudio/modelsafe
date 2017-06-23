@@ -23,7 +23,7 @@ export interface PropertyError {
  * an array of errors.
  */
 export type ModelErrors<T extends Model> = {
-  [P in keyof T]?: PropertyError;
+  [P in keyof T]?: PropertyError[];
 };
 
 /**

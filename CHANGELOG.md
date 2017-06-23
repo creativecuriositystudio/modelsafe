@@ -1,3 +1,7 @@
+# 1.0.0-alpha.6
+
+* [FIX] `ModelErrors` should have `PropertyError[]` per property, not a single `PropertyError`
+
 # 1.0.0-alpha.5
 
 * [FIX] If `required` is set to `false` when validating, then attribute type validations will be properly skipped
