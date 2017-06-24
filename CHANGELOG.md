@@ -1,3 +1,7 @@
+# 1.0.0-alpha.7
+
+* [FIX] `isLazyLoad()` should only match functions, not any object that's not a model constructor
+
 # 1.0.0-alpha.6
 
 * [FIX] `ModelErrors` should have `PropertyError[]` per property, not a single `PropertyError`

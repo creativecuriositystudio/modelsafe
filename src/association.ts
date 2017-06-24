@@ -58,5 +58,5 @@ export function isLazyLoad<T extends Model>(target: AssociationTarget<T>): boole
   // otherwise we just assume it's lazy loaded. We can do this because
   // even if it's some arbitrary value and not a lazy loader, the safe
   // will catch that because it requires a model decorator to be associated.
-  return !hasModelOptions(target);
+  return typeof (target) === 'function' && !hasModelOptions(target);
 }
