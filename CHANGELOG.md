@@ -1,3 +1,8 @@
+# 1.0.0-alpha.8
+
+* Revert to `es5` TypeScript target due to transpile model issues
+* Upgrade to TypeScript 2.3
+
 # 1.0.0-alpha.7
 
 * [FIX] `isLazyLoad()` should only match functions, not any object that's not a model constructor
