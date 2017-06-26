@@ -164,7 +164,7 @@ export const BOOLEAN = buildAttributeType(InternalAttributeType.BOOLEAN, async (
  * The property type should be declared as `Date`.
  */
 export const TIME = buildAttributeType(InternalAttributeType.TIME, async (_path: string, value: any) => {
-  if (!_.isDate(value)) {
+  if (!_.isDate(value) || isNaN(value.getTime())) {
     throw new PropertyValidationError('attribute.time', 'Not a time');
   }
 });
@@ -175,7 +175,7 @@ export const TIME = buildAttributeType(InternalAttributeType.TIME, async (_path:
  * The property type should be declared as `Date`.
  */
 export const DATE = buildAttributeType(InternalAttributeType.DATE, async (_path: string, value: any) => {
-  if (!_.isDate(value)) {
+  if (!_.isDate(value) || isNaN(value.getTime())) {
     throw new PropertyValidationError('attribute.date', 'Not a date');
   }
 });

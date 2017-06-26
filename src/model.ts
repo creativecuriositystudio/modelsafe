@@ -1,6 +1,7 @@
 /** Contains the model classes and decorators. */
 import * as _ from 'lodash';
 
+import { DATE } from './attribute';
 import { isLazyLoad, HAS_MANY, BELONGS_TO_MANY } from './association';
 import { getAttributes, getAttributeValidations, getAssociations } from './metadata';
 import { ModelErrors, ValidationError, PropertyValidationError } from './validation';
@@ -134,6 +135,13 @@ export abstract class Model {
     let attrs = getAttributes(this);
     let assocs = getAssociations(this);
     let instance = new (this as ModelConstructor<T>)(_.pick(data, Object.keys(attrs)), { defaults: false }) as T;
+
+    // Convert date ISO string into Date object
+    Object.keys(attrs).forEach(key => {
+      if (attrs[key].type.type === DATE.type && typeof (instance[key]) === 'string') {
+        instance[key] = new Date(instance[key]);
+      }
+    });
 
     if (assocOptions.associations) {
       // Call deserialization methods for associations to populate deserialized association data

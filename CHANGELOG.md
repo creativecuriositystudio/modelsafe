@@ -1,3 +1,8 @@
+# 1.0.0-alpha.10
+
+* [FIX] reject invalid dates in date validator
+* [FIX] deserialize ISO strings into Date objects
+
 # 1.0.0-alpha.9
 
 * [FEATURE] allow `defaultValue` to be lazily loaded
