@@ -108,7 +108,7 @@
 				</ul>
 				<p>Definition of attributes looks like the following:</p>
 				<pre><code class="lang-typescript"><span class="hljs-meta">@model</span>()
-<span class="hljs-keyword">class</span> User extends modelsafe.Model {
+<span class="hljs-keyword">class</span> User <span class="hljs-keyword">extends</span> modelsafe.Model {
   <span class="hljs-meta">@attr</span>(modelsafe.STRING)
   email: <span class="hljs-built_in">string</span>;
 
@@ -153,7 +153,7 @@ username?: <span class="hljs-built_in">string</span>;
 				</ul>
 				<p>Definition of the four different associations looks like the following:</p>
 				<pre><code class="lang-typescript"><span class="hljs-meta">@model</span>()
-<span class="hljs-keyword">class</span> ChatRoom extends modelsafe.Model {
+<span class="hljs-keyword">class</span> ChatRoom <span class="hljs-keyword">extends</span> modelsafe.Model {
   <span class="hljs-comment">// Other properties first..</span>
 
   <span class="hljs-meta">@assoc</span>(modelsafe.HAS_ONE, User)
@@ -177,7 +177,7 @@ username?: <span class="hljs-built_in">string</span>;
 }
 
 <span class="hljs-meta">@model</span>()
-<span class="hljs-keyword">class</span> User extends modelsafe.Model {
+<span class="hljs-keyword">class</span> User <span class="hljs-keyword">extends</span> modelsafe.Model {
   <span class="hljs-comment">// Other properties first..</span>
 
   <span class="hljs-meta">@assoc</span>(modelsafe.BELONGS_TO, ChatRoom)
