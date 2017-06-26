@@ -76,7 +76,9 @@ export abstract class Model {
         let attr = attrs[key];
 
         if (typeof (attr.defaultValue) !== 'undefined') {
-          this[key] = attr.defaultValue;
+          this[key] = isLazyLoad(attr.defaultValue) ?
+            (attr.defaultValue as () => ModelConstructor<any>)() :
+            attr.defaultValue;
         }
       }
     }
@@ -332,6 +334,12 @@ export abstract class Model {
 
       // Run the attribute type validation if available
       if (typeof (attr.type.validate) === 'function') {
+        if (_.isNil(value) && attr.defaultValue) {
+          value = isLazyLoad(attr.defaultValue) ?
+            (attr.defaultValue as () => ModelConstructor<any>)() :
+            attr.defaultValue;
+        }
+
         try {
           await attr.type.validate(key, value);
         } catch (err) {

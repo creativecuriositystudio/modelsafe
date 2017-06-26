@@ -1,3 +1,8 @@
+# 1.0.0-alpha.9
+
+* [FEATURE] allow `defaultValue` to be lazily loaded
+* [FEATURE] use `defaultValue` in place of a nil value in `validate`
+
 # 1.0.0-alpha.8
 
 * Revert to `es5` TypeScript target due to transpile model issues
