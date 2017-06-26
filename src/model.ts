@@ -342,7 +342,7 @@ export abstract class Model {
 
       // Run the attribute type validation if available
       if (typeof (attr.type.validate) === 'function') {
-        if (_.isNil(value) && attr.defaultValue) {
+        if (_.isNil(value) && typeof (attr.defaultValue) !== 'undefined') {
           value = isLazyLoad(attr.defaultValue) ?
             (attr.defaultValue as () => ModelConstructor<any>)() :
             attr.defaultValue;

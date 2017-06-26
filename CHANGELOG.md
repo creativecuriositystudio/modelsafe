@@ -1,3 +1,7 @@
+# 1.0.0-alpha.11
+
+* [FIX] test defaultValue for undefined, not truthiness
+
 # 1.0.0-alpha.10
 
 * [FIX] reject invalid dates in date validator
