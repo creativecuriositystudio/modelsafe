@@ -119,7 +119,7 @@ export abstract class Model {
     let assocOptions = {
       ... options,
 
-      depth: options.depth - 1
+      depth: options.depth !== null ? options.depth - 1 : null,
     };
 
     // Force it to be a plain object in case it isn't already.
@@ -164,7 +164,7 @@ export abstract class Model {
           throw new Error(`Cannot deserialize because association ${key} is not defined`);
         }
 
-        if (assocOptions.depth >= 0) {
+        if (assocOptions.depth === null || assocOptions.depth >= 0) {
           // If it's an array like relationship and the value is an array, deserialize each element
           if (assoc.type === HAS_MANY || assoc.type === BELONGS_TO_MANY) {
             // Only deserialize these types if the value is array-like.

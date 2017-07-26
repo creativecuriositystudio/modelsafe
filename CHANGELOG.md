@@ -1,3 +1,7 @@
+# 1.0.0-alpha.12
+
+* [FEATURE] interpret de/serialisation depth of null as infinite depth
+
 # 1.0.0-alpha.11
 
 * [FIX] test defaultValue for undefined, not truthiness
