@@ -18,14 +18,20 @@ export const BELONGS_TO_MANY = AssociationType.BELONGS_TO_MANY;
 
 /** The options that can be defined for an association. */
 export interface AssociationOptions {
+  /** The key of the association. */
+  key?: string | symbol;
+
   /** The type of association. */
   type?: AssociationType;
+
+  /** Whether the association is read-only. */
+  readOnly?: boolean;
 
   /** The target model of the association. */
   target?: AssociationTarget<any>;
 
-  /** Whether the association is read-only. */
-  readOnly?: boolean;
+  /** The assoc on the target model that references this association. */
+  targetAssoc?(model: ModelAssociations): AssociationOptions;
 }
 
 /** The assoations defined on a model. */

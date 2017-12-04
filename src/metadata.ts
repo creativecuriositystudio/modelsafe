@@ -216,6 +216,7 @@ export function assoc<T extends Model>(type: AssociationType, target?: Associati
   return (ctor: object, key: string | symbol) => defineAssociation(ctor, key, {
     ... options,
 
+    key,
     type,
     target
   });

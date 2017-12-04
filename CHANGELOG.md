@@ -1,3 +1,7 @@
+# 1.0.0-alpha.13
+
+* [FEATURE] add `targetAssoc` to associations
+
 # 1.0.0-alpha.12
 
 * [FEATURE] interpret de/serialisation depth of null as infinite depth
