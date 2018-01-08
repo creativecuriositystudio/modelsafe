@@ -1,6 +1,6 @@
 {
   "name": "modelsafe",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "main": "dist/index.js",
   "bugs": "https://github.com/creativecuriositystudio/modelsafe/issues",
   "keywords": [
@@ -18,10 +18,7 @@
   "scripts": {
     "prepush": "npm run lint && npm test",
     "prepublish": "npm run build",
-    "publish": "npm run docs:deploy",
     "build": "tsc",
-    "docs": "typedoc --name ModelSafe --mode modules --out docs src",
-    "docs:deploy": "npm run docs && gh-pages -d docs",
     "test": "mocha --opts mocha.opts",
     "test:auto": "mocha --opts mocha.opts --watch",
     "lint": "tslint --format stylish --type-check --project tsconfig.json",
@@ -38,10 +35,9 @@
     "husky": "^0.13.2",
     "jsverify": "^0.8.2",
     "mocha": "^3.2.0",
-    "ts-node": "^2.1.2",
+    "ts-node": "^3.3.0",
     "tslint": "^5.0.0",
-    "tslint-config-ccs": "^0.5.1",
-    "typedoc": "^0.9.0"
+    "tslint-config-ccs": "^0.5.1"
   },
   "dependencies": {
     "@types/lodash": "^4.14.53",

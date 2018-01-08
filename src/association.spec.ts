@@ -18,7 +18,7 @@ describe('@assoc', () => {
   it('should define correctly', () => {
     let assocs = getAssociations(Entity);
 
-    chai.assert.deepEqual(assocs['other'], { type: HAS_ONE, target: OtherEntity });
+    chai.assert.deepEqual(assocs['other'], { key: 'other', type: HAS_ONE, target: OtherEntity });
   });
 });
 
