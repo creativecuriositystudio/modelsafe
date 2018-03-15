@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as jsc from 'jsverify';
 
-import { STRING, REAL, INTEGER, CHAR, TEXT, BOOLEAN, TIME, DATE } from './attribute';
+import { STRING, REAL, INTEGER, CHAR, TEXT, BOOLEAN, TIME, DATE, DATETIME } from './attribute';
 import { model, attr, required, optional, defaultValue,
          email, url, uuid, json, hex, alpha, alphanumeric,
          base64, uppercase, lowercase, ip, matches, gt, gte,
@@ -66,6 +66,12 @@ class Validated7Model extends Model {
 class Validated8Model extends Model {
   @attr(DATE)
   date: Date;
+}
+
+@model()
+class Validated9Model extends Model {
+  @attr(DATETIME)
+  datetime: Date;
 }
 
 @model()
@@ -470,6 +476,10 @@ describe('Model', () => {
 
     it('should accept DATE attribute type validations with fuzzed datetimes', async () => {
       return forall(jsc.datetime, value => new Validated8Model({ date: value }));
+    });
+
+    it('should accept DATETIME attribute type validations with fuzzed datetimes', async () => {
+      return forall(jsc.datetime, value => new Validated9Model({ datetime: value }));
     });
 
     it('should accept optional attribute validations with nil values', async () => {

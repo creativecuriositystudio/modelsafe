@@ -3,7 +3,7 @@ import * as chai from 'chai';
 
 import { InternalAttributeType, STRING, CHAR, TEXT,
          INTEGER, BIGINT, REAL, BOOLEAN, TIME,
-         DATE, OBJECT, BLOB,
+         DATE, DATETIME, OBJECT, BLOB,
          ENUM, ARRAY, ArrayAttributeTypeOptions,
          EnumAttributeTypeOptions } from './attribute';
 
@@ -35,6 +35,7 @@ describe('AttributeType', () => {
     BOOLEAN: [InternalAttributeType.BOOLEAN, BOOLEAN],
     TIME: [InternalAttributeType.TIME, TIME],
     DATE: [InternalAttributeType.DATE, DATE],
+    DATETIME: [InternalAttributeType.DATETIME, DATETIME],
     OBJECT: [InternalAttributeType.OBJECT, OBJECT],
     BLOB: [InternalAttributeType.BLOB, BLOB]
   };

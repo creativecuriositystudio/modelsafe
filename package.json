@@ -1,6 +1,6 @@
 {
   "name": "modelsafe",
-  "version": "1.0.0-alpha.14",
+  "version": "2.0.0",
   "main": "dist/index.js",
   "bugs": "https://github.com/creativecuriositystudio/modelsafe/issues",
   "keywords": [
@@ -13,7 +13,9 @@
   "license": "MIT",
   "description": "A type-safe data modelling library",
   "contributors": [
-    "Zack Corr <zack@z0w0.me> (http://z0w0.me)"
+    "Zack Corr <zack@z0w0.me> (http://z0w0.me)",
+    "Daniel Cavanagh <danielcavanagh85@gmail.com>",
+    "Sorakthun Ly <ly.sorakthun@gmail.com>"
   ],
   "scripts": {
     "prepush": "npm run lint && npm test",

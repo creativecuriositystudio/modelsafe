@@ -1,10 +1,43 @@
 /** Contains the model classes and decorators. */
 import * as _ from 'lodash';
 
-import { DATE } from './attribute';
+import { TIME, DATE, DATETIME } from './attribute';
 import { isLazyLoad, HAS_MANY, BELONGS_TO_MANY } from './association';
 import { getAttributes, getAttributeValidations, getAssociations } from './metadata';
 import { ModelErrors, ValidationError, PropertyValidationError } from './validation';
+
+// TODO
+// Model pick API proposals
+/*
+data = data.pick(_ => _[_.attr1, _.attr2]); // Create a new partial instance with chosen attributes
+data = data.pick(_ => _[_.attr1, _.attr2]); // Create a new partial instance with chosen attributes
+data = data.pickDefined(); // Create a new partial instance with attributes that don't have a default
+data = data.pickDefaults(); // Create a new partial instance with attributes that have a default
+data = data.defaults(); // Create a new partial instance with attributes defaults only
+*/
+
+// Model merge API proposals
+/*
+data = data.merge(newData, { attr1: 2 }); // Merge the top level of all given objects
+data = data.merge(_ => [_.attr1, _.attr2], newData, { attr1: 2 }); // Merge top level but only for chosen attributes
+data = data.mergeOnly(_ => [_.attr1, _.attr2], newData, { attr1: 2 }); // Alternative
+data = data.merge(newData.pick(_ => [_.attr1, _.attr2]), { attr1: 2 }); // Alternative
+data = Model.merge(data, newData.pick(_ => [_.attr1, _.attr2]), { attr1: 2 }); // Alternative
+
+data = data.mergeAssoc(_ => _.assoc1, newData.assoc1, { attr1: 4 }); // Merge top level of given associate
+data = data.mergeAssoc(_ => _.assoc1, _ => [_.attr1, _.attr2], newData.assoc1, { attr1: 4 });
+data = data.mergeAssocOnly(_ => _.assoc1, _ => [_.attr1, _.attr2], newData.assoc1, { attr1: 4 }); // Alternative
+data = data.mergeAssoc(_ => _.assoc1, newData.assoc1.pick(_ => [_.attr1, _.attr2]), { attr1: 4 }); // Alternative
+data.assoc1 = data.assoc1.merge(newData.assoc1, { attr1: 4 }); // Alternative
+data.assoc1 = AssocModel.merge(data.assoc1, newData.assoc1, { attr1: 4 }); // Alternative
+
+data = data.mergeDeep(newData);
+data = data.mergeDeep(_ => [_.attr1, _.attr2, _.assoc1], newData);
+data = data.mergeDeep(_ => [_.attr1, _.attr2, _.assoc1.attr1, _.assoc1.attr2], newData);
+data = data.mergeDeepOnly(_ => [...], ...); // Alternative
+data = data.mergeDeep(newData.pick(_ => [...]), ...); // Alternative
+data = Model.mergeDeep(data, newData.pick(_ => [...]), ...); // Alternative
+*/
 
 /** Options for constructing a model instance. */
 export interface ModelConstructorOptions {
@@ -44,6 +77,32 @@ export interface ValidationOptions {
    * This can be turned off to support partial validations.
    */
   required?: boolean;
+}
+
+/** A representation of a property in a model */
+export class Property {
+  constructor(public path: string) {}
+}
+
+/** A represention of all properities in a model (recursive)
+ */
+export type ModelProperties<T extends Model> = {
+  [P in keyof T]: Property | ModelProperties<T[P]>;
+};
+
+/** Get all properties (attrs and assocs) for the model, optionally prefixing a parent path to the prop keys */
+// FIXME this will recurse infinitely. add a depth or track model chains and prevent cut infinite cycles
+export function getProperties<T extends Model, P extends keyof T>(model: ModelConstructor<T>, path?: string): ModelProperties<T> {
+  return Object.assign(
+    _.chain(getAttributes(model))
+      .mapKeys((_, k) => path ? path + '.' + k : k)
+      .mapValues((_, k) => new Property(k))
+      .value(),
+    _.chain(getAssociations(model))
+      .mapKeys((_, k) => path ? path + '.' + k : k)
+      .mapValues((v, k) =>
+        getProperties((isLazyLoad(v.target) ? (v.target as () => ModelConstructor<T[P]>)() : v.target) as ModelConstructor<T[P]>, k))
+      .value()) as ModelProperties<T>;
 }
 
 /**
@@ -138,7 +197,7 @@ export abstract class Model {
 
     // Convert date ISO string into Date object
     Object.keys(attrs).forEach(key => {
-      if (attrs[key].type.type === DATE.type && typeof (instance[key]) === 'string') {
+      if (_.includes([TIME.type, DATE.type, DATETIME.type], attrs[key].type.type) && typeof (instance[key]) === 'string') {
         instance[key] = new Date(instance[key]);
       }
     });
@@ -200,7 +259,7 @@ export abstract class Model {
    * away everything else.
    *
    * @param instance The instance to serialize to JSON.
-   * @param _options Any extra options to use for serialization.
+   * @param options Any extra options to use for serialization.
    * @returns        A promise that resolves with a serialized model, otherwise rejecting with an error.
    */
   static async serialize<T extends Model>(instance: T, options?: SerializeOptions): Promise<object> {
@@ -268,6 +327,70 @@ export abstract class Model {
 
     return result;
   }
+
+  /**
+   * Generate a partial instance of the model with only the chosen attributes and associations
+   *
+   * @param instance The instance to pick from
+   * @returns        A promise that resolves with a serialized model, otherwise rejecting with an error.
+   */
+  /*
+  static async pick<T extends Model, P extends keyof T>(
+    instance: T,
+    picker: (props: ModelProperties<T>) => (Property | ModelProperties<T[P]>)[]):
+    Promise<object> {
+
+    const props = getProperties<T, P>(instance.constructor as ModelConstructor<T>);
+    const pickedProps = picker(props);
+
+    let result = _.pick(_.toPlainObject(instance), Object.keys(attrs));
+
+    if (assocOptions.associations) {
+      // Call serialization methods for associations to populate serialized association data
+      for (let key of Object.keys(assocs)) {
+        let assoc = assocs[key];
+        let value = instance[key];
+        let target = assoc.target;
+
+        // Don't attempt to serialize association values that are nil.
+        if (_.isNil(value)) {
+          continue;
+        }
+
+        if (isLazyLoad(target)) {
+          target = (target as () => ModelConstructor<any>)();
+        }
+
+        // We can't serialize undefined model constructors
+        if (!target) {
+          throw new Error(`Cannot serialize because association ${key} is not defined`);
+        }
+
+        if (assocOptions.depth >= 0) {
+          // If it's an array like relationship and the value is an array, serialize each element.
+          if (assoc.type === HAS_MANY || assoc.type === BELONGS_TO_MANY) {
+            // Only deserialize these types if the value is array-like.
+            // Fallback to an empty array if the value is invalid.
+            if (!_.isArray(value)) {
+              result[key] = [];
+
+              continue;
+            }
+
+            // FIXME: Any cast required because we don't know the target model type in this instance
+            result[key] = await Promise.all(_.map(value, async (item) => {
+              return (target as ModelConstructor<any>).serialize(item as any, assocOptions);
+            }));
+          } else {
+            result[key] = await (target as ModelConstructor<any>).serialize(value, assocOptions);
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+  */
 
   /**
    * Serialize a model instance into a JSON object.

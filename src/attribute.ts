@@ -19,6 +19,7 @@ export enum InternalAttributeType {
   BOOLEAN,
   TIME,
   DATE,
+  DATETIME,
   OBJECT,
   BLOB,
   ENUM,
@@ -170,13 +171,24 @@ export const TIME = buildAttributeType(InternalAttributeType.TIME, async (_path:
 });
 
 /**
- * A date attribute type.
+ * A date-only attribute type.
  *
  * The property type should be declared as `Date`.
  */
 export const DATE = buildAttributeType(InternalAttributeType.DATE, async (_path: string, value: any) => {
   if (!_.isDate(value) || isNaN(value.getTime())) {
     throw new PropertyValidationError('attribute.date', 'Not a date');
+  }
+});
+
+/**
+ * A date-time attribute type.
+ *
+ * The property type should be declared as `Date`.
+ */
+export const DATETIME = buildAttributeType(InternalAttributeType.DATETIME, async (_path: string, value: any) => {
+  if (!_.isDate(value) || isNaN(value.getTime())) {
+    throw new PropertyValidationError('attribute.datetime', 'Not a datetime');
   }
 });
 

@@ -46,7 +46,8 @@ decorated with the `attr` decorator. Attributes can be of the following types:
 * REAL, a real number (equivalent to any JavaScript number)
 * BOOLEAN, a true/false (boolean) value
 * TIME, a time (equivalent to the JavaScript `Date` object)
-* DATE, a date and time (equivalent to the JavaScript `Date` object)
+* DATE, a date only (equivalent to the JavaScript `Date` object)
+* DATETIME, a date and time (equivalent to the JavaScript `Date` object)
 * OBJECT, a plain JS object
 * BLOB, a blob of binary data (an `ArrayBuffer`)
 * ENUM, an enumerable value that can be one of many string values
