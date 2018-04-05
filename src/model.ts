@@ -87,7 +87,7 @@ export class Property {
 /** A represention of all properities in a model (recursive)
  */
 export type ModelProperties<T extends Model> = {
-  [P in keyof T]: Property | ModelProperties<T[P]>;
+  [P in keyof T]: Property | ModelProperties<Model>;
 };
 
 /** Get all properties (attrs and assocs) for the model, optionally prefixing a parent path to the prop keys */
@@ -101,7 +101,7 @@ export function getProperties<T extends Model, P extends keyof T>(model: ModelCo
     _.chain(getAssociations(model))
       .mapKeys((_, k) => path ? path + '.' + k : k)
       .mapValues((v, k) =>
-        getProperties((isLazyLoad(v.target) ? (v.target as () => ModelConstructor<T[P]>)() : v.target) as ModelConstructor<T[P]>, k))
+        getProperties((isLazyLoad(v.target) ? (v.target as () => ModelConstructor<T[P]>)() : v.target) as ModelConstructor<Model>, k))
       .value()) as ModelProperties<T>;
 }
 

@@ -1,3 +1,15 @@
+# 2.0.2
+
+* [FIX] relax ModelProperties typing in a better way 
+
+# 2.0.1
+
+* [FIX] relax ModelProperties typing slightly as typescript isn't quite there yet
+
+# 2.0.0
+
+* [UPDATE] update to modelsafe 2
+
 # 1.0.0-alpha.13
 
 * [FEATURE] add `targetAssoc` to associations
