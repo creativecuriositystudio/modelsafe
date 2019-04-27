@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 
 import { ValidationFunction, PropertyValidationError } from './validation';
+import { AssociationTarget } from './association';
 
 /**
  * The internal type of an attribute.
@@ -46,7 +47,7 @@ export interface EnumAttributeTypeOptions {
 
 /** Options for the ARRAY attribute type. */
 export interface ArrayAttributeTypeOptions {
-  /* The attribute type this array will contain. */
+  /** The attribute type this array will contain. */
   contained: AttributeType;
 }
 
@@ -254,6 +255,12 @@ export interface AttributeOptions {
 
   /** Whether the attribute is a primary key. */
   primary?: boolean;
+
+  /** Whether the attribute is a foreign key */
+  foreign?: boolean;
+
+  /** Foreign association target */
+  target?: AssociationTarget<any>;
 
   /** Whether the attribute is unique. */
   unique?: boolean;

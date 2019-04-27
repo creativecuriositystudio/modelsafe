@@ -1,3 +1,9 @@
+# 2.0.3
+
+* [UPDATE] Upgrade dependencies version to resolve vulnerabilities and use latest Typescript
+
+* [FEATURE] Add `foreign` and `target` keys to `AttributeOptions`
+
 # 2.0.2
 
 * [FIX] relax ModelProperties typing in a better way 

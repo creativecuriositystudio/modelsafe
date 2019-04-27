@@ -92,7 +92,7 @@ export type ModelProperties<T extends Model> = {
 
 /** Get all properties (attrs and assocs) for the model, optionally prefixing a parent path to the prop keys */
 // FIXME this will recurse infinitely. add a depth or track model chains and prevent cut infinite cycles
-export function getProperties<T extends Model, P extends keyof T>(model: ModelConstructor<T>, path?: string): ModelProperties<T> {
+export function getProperties<T extends Model>(model: ModelConstructor<T>, path?: string): ModelProperties<T> {
   return Object.assign(
     _.chain(getAttributes(model))
       .mapKeys((_, k) => path ? path + '.' + k : k)
@@ -101,7 +101,7 @@ export function getProperties<T extends Model, P extends keyof T>(model: ModelCo
     _.chain(getAssociations(model))
       .mapKeys((_, k) => path ? path + '.' + k : k)
       .mapValues((v, k) =>
-        getProperties((isLazyLoad(v.target) ? (v.target as () => ModelConstructor<T[P]>)() : v.target) as ModelConstructor<Model>, k))
+        getProperties((isLazyLoad(v.target) ? (v.target as () => ModelConstructor<T>)() : v.target) as ModelConstructor<Model>, k))
       .value()) as ModelProperties<T>;
 }
 
@@ -515,7 +515,7 @@ export abstract class Model {
 }
 
 /** A value that is both a model class value and something that can construct a model. */
-export type ModelConstructor<T extends Model> = typeof Model & { new(): T };
+export type ModelConstructor<T extends Model> = typeof Model & (new() => T);
 
 /** The options that can be defined for a model. */
 export interface ModelOptions {

@@ -1,6 +1,6 @@
 {
   "name": "modelsafe",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "main": "dist/index.js",
   "bugs": "https://github.com/creativecuriositystudio/modelsafe/issues",
   "keywords": [
@@ -23,31 +23,31 @@
     "build": "tsc",
     "test": "mocha --opts mocha.opts",
     "test:auto": "mocha --opts mocha.opts --watch",
-    "lint": "tslint --format stylish --type-check --project tsconfig.json",
+    "lint": "tslint --format stylish --project tsconfig.json",
     "clean": "rm -rf dist"
   },
   "types": "./dist/index.d.ts",
   "devDependencies": {
-    "@types/chai": "^3.4.35",
-    "@types/chai-as-promised": "0.0.31",
-    "@types/mocha": "^2.2.33",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^7.0.0",
-    "gh-pages": "^1.0.0",
-    "husky": "^0.13.2",
-    "jsverify": "^0.8.2",
-    "mocha": "^3.2.0",
-    "ts-node": "^3.3.0",
-    "tslint": "^5.0.0",
-    "tslint-config-ccs": "^0.5.1"
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "7.1.0",
+    "@types/mocha": "^5.2.6",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "gh-pages": "^2.0.1",
+    "husky": "^2.1.0",
+    "jsverify": "^0.8.4",
+    "mocha": "^6.1.4",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
+    "tslint-config-ccs": "^0.6.2"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.53",
-    "@types/reflect-metadata": "0.0.5",
-    "@types/validator": "^6.2.0",
-    "lodash": "^4.17.2",
-    "reflect-metadata": "^0.1.8",
-    "typescript": "^2.6.2",
-    "validator": "^7.0.0"
+    "@types/lodash": "^4.14.123",
+    "@types/reflect-metadata": "0.1.0",
+    "@types/validator": "^10.11.0",
+    "lodash": "^4.17.11",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^3.4.5",
+    "validator": "^10.11.0"
   }
 }
